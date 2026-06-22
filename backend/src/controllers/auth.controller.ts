@@ -3,7 +3,7 @@
 import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import User from "../models/user.model";
-import jwt, { JsonWebTokenError, JwtPayload } from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 
 const SALT_ROUNDS = 10;
 

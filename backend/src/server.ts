@@ -2,6 +2,7 @@ import express, { Request, Response, Application } from "express";
 import dotenv from "dotenv";
 import connectDB from "./config/db";
 import authRouter from "./routes/auth.route";
+import productRouter from "./routes/product.route";
 import cookieParser = require("cookie-parser");
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.get("/", (req: Request, res: Response) => {
 
 // routes
 app.use("/v1/auth", authRouter);
+app.use("/v1/product", productRouter);
 
 // connect to db
 connectDB().then(() => {
