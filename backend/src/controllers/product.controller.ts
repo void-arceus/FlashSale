@@ -1,10 +1,10 @@
 // product.controller.ts
 import { Request, Response } from "express";
 import { uploadImage } from "../utils/imagekit.util";
+import Product from "../models/product.model";
 
 export const addProduct = async (req: Request, res: Response) => {
     try {
-        // upload file from here
         if (!req.file) {
             return res
                 .status(400)
@@ -13,6 +13,32 @@ export const addProduct = async (req: Request, res: Response) => {
         const fileBuffer = req.file.buffer;
         const name = req.file.originalname;
         const uploadFile = await uploadImage(fileBuffer, name);
+        const url = uploadFile.url;
+
+        // take the product info inputs
+        const {
+            productName,
+            description,
+            quantity,
+            originalPrice,
+            salePrice,
+            category,
+            saleStartTime,
+            saleEndTime,
+        } = req.body;
+
+        const result = await Product.create({
+            productName,
+            url,
+            description,
+            quantity: Number(quantity),
+            originalPrice: Number(originalPrice),
+            salePrice: Number(salePrice),
+            category,
+            saleStartTime: new Date(saleStartTime),
+            saleEndTime: new Date(saleEndTime),
+        });
+
         return res
             .status(201)
             .json({ status: true, message: "Image Uploaded Successfully" });
