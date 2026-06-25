@@ -1,0 +1,32 @@
+@import "tailwindcss";
+
+* {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+@theme {
+    /* --- Layout & Neutral Base --- */
+    --color-primary-bg: #ffffff;
+    --color-surface: #fbfbfb;
+    --color-border: #e5e5e5;
+    --color-border-hover: #a3a3a3;
+    --color-border-focus: #000000;
+
+    /* --- Buttons / Interactive Elements --- */
+    --color-btn-primary: #000000; /* Solid black for primary buttons */
+    --color-btn-hover: #171717; /* Very dark neutral gray for hover state */
+    --color-btn-text: #ffffff; /* White text inside the button */
+
+    /* --- Text Hierarchy --- */
+    --color-text-main: #000000;
+    --color-text-body: #171717;
+    --color-text-muted: #737373;
+
+    /* --- Feedback & Semantic States --- */
+    --color-error: #dc2626;
+    --color-error-bg: #fef2f2;
+    --color-success: #15803d;
+    --color-success-bg: #f0fdf4;
+    --color-warning: #b45309;
+    --color-warning-bg: #fffbeb;
+}

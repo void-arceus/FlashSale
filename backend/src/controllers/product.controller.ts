@@ -49,3 +49,56 @@ export const addProduct = async (req: Request, res: Response) => {
             .json({ status: false, message: "Internal Server Error" });
     }
 };
+
+export const deleteProduct = async (req: Request, res: Response) => {
+    try {
+        const id = req.params.id;
+        if (!id) {
+            return res.status(400).json({
+                status: false,
+                message: "Product ID not provided",
+            });
+        }
+
+        // delete the product
+        const deletedProduct = await Product.findByIdAndDelete(id);
+        if (!deletedProduct) {
+            return res
+                .status(404)
+                .json({ status: false, message: "Product not found" });
+        }
+        return res.status(200).json({
+            status: true,
+            message: "Product Deleted Successfully",
+        });
+    } catch (error: any) {
+        console.error(error.message);
+        return res.status(500).json({
+            status: false,
+            message: "Internal Server Error",
+        });
+    }
+};
+
+// getproducts  -> public route
+export const getProducts = async (req: Request, res: Response) => {
+    try {
+        /* 
+            for later: 
+            -implement pagination 
+            -filters 
+        */
+        const products = await Product.find();
+        return res.status(200).json({
+            status: true,
+            message: "Products fetched successfully",
+            data: products,
+        });
+    } catch (error: any) {
+        console.error(error.message);
+        return res.status(500).json({
+            status: false,
+            message: "Internal server error",
+        });
+    }
+};
