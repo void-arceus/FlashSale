@@ -25,6 +25,12 @@ export interface UserPayload extends JwtPayload {
     role: string;
 }
 
+interface UserDataType {
+    username: string;
+    email: string;
+    role: string;
+}
+
 export const Register = async (req: Request, res: Response) => {
     try {
         const { username, email, password } = req.body;
@@ -51,7 +57,7 @@ export const Register = async (req: Request, res: Response) => {
         return res.status(201).json({
             status: true,
             message: "User Registered Successfully",
-            data: { username: username, email: email },
+            data: { username: username, email: email } as UserDataType,
         });
     } catch (error: any) {
         console.error(error.message);
@@ -61,7 +67,10 @@ export const Register = async (req: Request, res: Response) => {
     }
 };
 
-export const Login = async (req: Request, res: Response) => {
+export const Login = async (
+    req: Request,
+    res: Response,
+): Promise<Response | any> => {
     try {
         const { email, password } = req.body;
         const user = await User.findOne({ email: email });
@@ -80,7 +89,7 @@ export const Login = async (req: Request, res: Response) => {
 
         // create jwt token
         const payload: UserPayload = {
-            id: user.id.toString(),
+            id: user._id.toString(),
             role: user.role,
         };
         const token = jwt.sign(payload, process.env.JWT_SECRET_KEY as string, {
@@ -92,7 +101,11 @@ export const Login = async (req: Request, res: Response) => {
         return res.status(200).json({
             status: true,
             message: "Logged in Successfully",
-            token: token,
+            data: {
+                username: user.username,
+                email: user.email,
+                role: user.role,
+            } as UserDataType,
         });
     } catch (error: any) {
         console.error(error.message);
@@ -117,5 +130,52 @@ export const logout = async (req: Request, res: Response) => {
         return res
             .status(500)
             .json({ status: false, message: "Internal Server Error!" });
+    }
+};
+
+export const getCurrentUser = async (
+    req: Request,
+    res: Response,
+): Promise<Response | any> => {
+    try {
+        const token = req.cookies?.Token || null;
+        if (!token) {
+            return res.status(403).json({
+                status: false,
+                message: "No user found",
+            });
+        }
+        const verify = jwt.verify(
+            token,
+            process.env.JWT_SECRET_KEY as string,
+        ) as { id: string };
+        if (!verify) {
+            return res
+                .status(403)
+                .json({ status: false, message: "No token provided" });
+        }
+
+        // get user data from database
+        const user = await User.findById(verify.id);
+        if (!user) {
+            return res.status(404).json({
+                status: false,
+                message: "User not found",
+            });
+        }
+        return res.status(200).json({
+            status: true,
+            message: "User is logged in",
+            data: {
+                username: user.username,
+                email: user.email,
+                role: user.role,
+            },
+        });
+    } catch (error: any) {
+        console.error(error.message);
+        return res
+            .status(500)
+            .json({ status: false, message: "Internal Server Error" });
     }
 };

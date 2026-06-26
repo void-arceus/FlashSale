@@ -1,6 +1,7 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { login } from "../services/authService";
+import { useAuth } from "../../../context/AuthContext";
 
 interface LoginFormInputs {
     email: string;
@@ -15,13 +16,22 @@ function LoginPage() {
         formState: { errors },
     } = useForm<LoginFormInputs>();
 
+    const { setUserData } = useAuth();
     const navigate = useNavigate();
 
     const onFormSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
         const res = await login(data);
         if (res.status === true) {
-            console.log(res.message);
+            setUserData(res.data);
+            if (res.data.role === "admin") {
+                navigate("/admin");
+            } else if (res.data.role === "user") {
+                navigate("/userDashboard");
+            } else {
+                console.log("404! Not Found");
+            }
         } else {
+            setUserData(null);
             console.log(res.message);
         }
     };
