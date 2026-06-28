@@ -6,7 +6,6 @@ import {
     validateRegister,
     validateLogin,
 } from "../middlewares/validate.middleware";
-import { authUser, authAdmin } from "../middlewares/auth.middleware";
 import {
     Register,
     Login,

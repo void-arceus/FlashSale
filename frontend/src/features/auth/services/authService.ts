@@ -41,7 +41,18 @@ export const register = async (data: object) => {
         const message = res.data.message || "Account Created Successfully";
         return { status: true, message: message };
     } catch (error: any) {
-        const message = error.message?.data?.message || "Registration Failed";
+        const message = error.response?.data?.message || "Registration Failed";
+        return { status: false, message: message };
+    }
+};
+
+export const logout = async () => {
+    try {
+        const res = await axios.post(`${BASE_URL}/auth/logout`);
+        const message = res.data?.message || "Logged out successfully";
+        return { status: true, message: message };
+    } catch (error: any) {
+        const message = error.reponse?.data?.message || "Something went wrong!";
         return { status: false, message: message };
     }
 };

@@ -6,6 +6,8 @@ import Navbar from "./components/Navbar";
 import Homepage from "./pages/Homepage";
 import axios from "axios";
 import AdminDashboard from "./features/admin/pages/AdminDashboard";
+import ProductManager from "./features/admin/pages/ProductManager";
+import AddProduct from "./features/admin/pages/AddProduct";
 axios.defaults.withCredentials = true;
 
 function App() {
@@ -18,7 +20,14 @@ function App() {
                         <Route path="/" element={<Homepage />} />
                         <Route path="/login" element={<LoginPage />} />
                         <Route path="/register" element={<RegisterPage />} />
+
+                        {/* admin routes */}
                         <Route path="/admin" element={<AdminDashboard />} />
+                        <Route
+                            path="/productManager"
+                            element={<ProductManager />}
+                        />
+                        <Route path="addProduct" element={<AddProduct />} />
                     </Routes>
                 </Router>
             </AuthProvider>
