@@ -15,8 +15,8 @@ axios.defaults.withCredentials = true;
 function App() {
     return (
         <>
-            <ConfirmationProvider>
-                <AuthProvider>
+            <AuthProvider>
+                <ConfirmationProvider>
                     <Router>
                         <Navbar />
                         <ConfirmationModal />
@@ -37,8 +37,8 @@ function App() {
                             <Route path="addProduct" element={<AddProduct />} />
                         </Routes>
                     </Router>
-                </AuthProvider>
-            </ConfirmationProvider>
+                </ConfirmationProvider>
+            </AuthProvider>
         </>
     );
 }
