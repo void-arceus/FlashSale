@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcrypt";
 import User from "../models/user.model";
 import jwt, { JwtPayload } from "jsonwebtoken";
+import { Types } from "mongoose";
 
 const SALT_ROUNDS = 10;
 
@@ -26,6 +27,7 @@ export interface UserPayload extends JwtPayload {
 }
 
 interface UserDataType {
+    id: Types.ObjectId;
     username: string;
     email: string;
     role: string;
@@ -102,6 +104,7 @@ export const Login = async (
             status: true,
             message: "Logged in Successfully",
             data: {
+                id: user._id,
                 username: user.username,
                 email: user.email,
                 role: user.role,
@@ -167,6 +170,7 @@ export const getCurrentUser = async (
             status: true,
             message: "User is logged in",
             data: {
+                id: user._id,
                 username: user.username,
                 email: user.email,
                 role: user.role,

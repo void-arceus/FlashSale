@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { logout } from "../features/auth/services/authService";
+import { useConfirmation } from "../context/ConfirmationContext";
 
 function Navbar() {
     const navigate = useNavigate();
@@ -11,6 +12,7 @@ function Navbar() {
         if (res.status === true) {
             console.log(res.message);
             setUserData(null);
+            navigate("/");
         } else {
             console.error(res.message);
             return;
@@ -18,7 +20,7 @@ function Navbar() {
     };
 
     return (
-        <nav className="fixed bg-primary-bg h-14 z-10 w-full flex item-center justify-center border-b border-border shadow-sm">
+        <nav className="fixed bg-primary-bg h-14 z-10 w-full flex item-center justify-center border-b border-border shadow-sm px-4">
             <div className="w-full max-w-6xl flex items-center justify-between">
                 {/* logo */}
                 <div className="flex items-center">

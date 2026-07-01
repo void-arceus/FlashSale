@@ -2,6 +2,8 @@
 import { Request, Response } from "express";
 import { uploadImage } from "../utils/imagekit.util";
 import Product from "../models/product.model";
+import User from "../models/user.model";
+import { ResponsiveImageAttributes } from "@imagekit/nodejs/resources";
 
 export const addProduct = async (req: Request, res: Response) => {
     try {
@@ -37,6 +39,7 @@ export const addProduct = async (req: Request, res: Response) => {
             category,
             saleStartTime: new Date(saleStartTime),
             saleEndTime: new Date(saleEndTime),
+            adminId: req.user?.id,
         });
 
         return res
@@ -100,5 +103,31 @@ export const getProducts = async (req: Request, res: Response) => {
             status: false,
             message: "Internal server error",
         });
+    }
+};
+
+export const getAdminProducts = async (
+    req: Request,
+    res: Response,
+): Promise<Response | any> => {
+    try {
+        const { adminId } = req.params;
+        if (!adminId) {
+            return res.status(400).json({
+                status: false,
+                message: "Missing admin id",
+            });
+        }
+        const products = await Product.find({ adminId: adminId });
+        return res.status(200).json({
+            status: true,
+            message: "Products fetched successfully",
+            data: products,
+        });
+    } catch (error: any) {
+        console.error(error.message);
+        return res
+            .status(500)
+            .json({ status: false, message: "Internal Server Error" });
     }
 };

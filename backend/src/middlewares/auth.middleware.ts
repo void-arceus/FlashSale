@@ -23,6 +23,7 @@ const getDecoded = (req: Request, res: Response) => {
             token,
             process.env.JWT_SECRET_KEY as string,
         ) as { id: string; role: string };
+        req.user = decoded;
         return decoded;
     } catch (error: any) {
         console.error(error.message);

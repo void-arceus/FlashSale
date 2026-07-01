@@ -23,9 +23,6 @@ export const getCurrentUser = async (): Promise<{
 }> => {
     try {
         const res = await axios.get(`${BASE_URL}/auth/me`);
-        if (res.data.status === false) {
-            return { status: false };
-        }
         return { status: true, data: res.data.data };
     } catch (error: any) {
         return {

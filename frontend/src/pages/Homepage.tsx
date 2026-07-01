@@ -20,15 +20,15 @@ function Homepage() {
         <section className="pt-16 w-full flex items-center justify-center">
             <main className="w-full max-w-6xl flex flex-col">
                 {/* testing displaying product data*/}
-                <h1 className="text-2xl font-semibold text-text-main mb-3">
+                <h1 className="px-4 text-2xl font-semibold text-text-main mb-3">
                     All Products
                 </h1>
-                <div className="w-full grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4">
+                <div className="w-full px-4 pb-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                     {products.length > 0 ? (
                         products.map((p) => (
                             <div
                                 key={p._id}
-                                className="w-full max-w-sm border border-border rounded-lg p-2 flex flex-col gap-2"
+                                className="w-full border border-border rounded-lg p-2 flex flex-col gap-2"
                             >
                                 <div className="w-full h-64 overflow-hidden rounded-lg bg-slate-100">
                                     <img

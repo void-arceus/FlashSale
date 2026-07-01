@@ -18,6 +18,45 @@ export interface Product {
     updatedAt: string;
 }
 
+export const addProduct = async (
+    data: any,
+): Promise<{ status: boolean; message: string }> => {
+    try {
+        const result = await axios.post(`${BASE_URL}/product/add`, data);
+        const message = "Product added successfully";
+        return { status: true, message: message };
+    } catch (error: any) {
+        const message =
+            error.response?.data?.message || "Failed to add product";
+        return { status: false, message: message };
+    }
+};
+
+// get admin products
+export const getAdminProducts = async (
+    adminId: string,
+): Promise<{
+    status: boolean;
+    message: string;
+    data?: Product;
+}> => {
+    try {
+        const res = await axios.get(`${BASE_URL}/product/products/${adminId}`);
+        const message = "Products Fetched Successfully";
+        return {
+            status: true,
+            message: message,
+            data: res.data.data as Product,
+        };
+    } catch (error: any) {
+        const message = error.response?.data?.message || "something went wrong";
+        return {
+            status: false,
+            message: message,
+        };
+    }
+};
+// get all products
 export const getProducts = async (): Promise<{
     status: boolean;
     data?: Product;
@@ -28,7 +67,7 @@ export const getProducts = async (): Promise<{
         return { status: true, data: res.data.data as Product };
     } catch (error: any) {
         const message =
-            error.reponse?.data?.message || "Failed to fetch products";
+            error.response?.data?.message || "Failed to fetch products";
         return { status: false, message: message };
     }
 };

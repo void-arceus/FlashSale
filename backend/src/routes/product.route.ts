@@ -5,6 +5,7 @@ import { authAdmin } from "../middlewares/auth.middleware";
 import {
     addProduct,
     deleteProduct,
+    getAdminProducts,
     getProducts,
 } from "../controllers/product.controller";
 import { validateProduct } from "../middlewares/product.middleware";
@@ -19,7 +20,9 @@ productRouter.post(
     validateProduct,
     addProduct,
 );
-productRouter.get("/products", getProducts);
+productRouter.get("/products/", getProducts);
+productRouter.get("/products/:adminId", authAdmin, getAdminProducts);
+
 productRouter.post("/delete/:id", authAdmin, deleteProduct);
 
 export default productRouter;

@@ -1,8 +1,11 @@
 import { useForm, type SubmitHandler } from "react-hook-form";
+import { addProduct } from "../../products/services/productService";
+import { useNavigate } from "react-router-dom";
+import type { File } from "buffer";
 
-interface ProductInputType {
+export interface ProductInputType {
     productName: string;
-    productImage: File;
+    image: File;
     description: string;
     quantity: number;
     originalPrice: number;
@@ -16,20 +19,46 @@ function AddProduct() {
     const {
         register,
         handleSubmit,
+        reset,
         formState: { errors },
     } = useForm<ProductInputType>({ defaultValues: { category: "" } });
+    const navigate = useNavigate();
 
     const onFormSubmit: SubmitHandler<ProductInputType> = async (data) => {
-        console.log("Data:", data);
-        console.log("Your form is submitted");
+        const formData = new FormData();
+
+        // add image to the formData object
+        if (data.image && data.image[0]) {
+            formData.append("image", data.image[0] as File);
+        }
+
+        Object.keys(data).forEach((key) => {
+            if (key !== "image") {
+                formData.append(
+                    key,
+                    String(data[key as keyof ProductInputType]),
+                );
+            }
+        });
+        const res = await addProduct(formData);
+        if (res.status === true) {
+            console.log(res.message);
+        } else {
+            console.log(res.message);
+        }
+    };
+
+    const handleCancel = () => {
+        reset();
+        navigate("/");
     };
 
     return (
         <section className="w-full flex flex-col items-center justify-start h-screen pt-14">
-            <div className="w-full max-w-6xl flex items-center justify-center pt-5">
+            <div className="w-full max-w-6xl flex items-center justify-center px-4 pt-5">
                 <form
                     onSubmit={handleSubmit(onFormSubmit)}
-                    className="w-full max-w-2xl bg-surface p-3 rounded-xl shadow-sm flex flex-col items-center gap-6"
+                    className="h-fit w-full max-w-2xl bg-surface p-3 rounded-xl shadow-sm flex flex-col items-center gap-6 mb-5"
                 >
                     <h1 className="text-2xl font-semibold text-text-main">
                         Add Product
@@ -74,8 +103,8 @@ function AddProduct() {
                     </div>
 
                     {/* quantity and category  */}
-                    <div className="w-full flex items-center justify-between">
-                        <div className="w-1/2 flex flex-col items-start justify-start gap-2">
+                    <div className="w-full flex flex-col gap-6 sm:gap-0 sm:flex-row items-center justify-between sm:items-start">
+                        <div className="w-full sm:w-1/2 flex flex-col items-start justify-start gap-2">
                             <div className="w-ful flex flex-col items-start gap-1">
                                 <label
                                     htmlFor="quantity"
@@ -99,7 +128,7 @@ function AddProduct() {
                                 </p>
                             )}
                         </div>
-                        <div className="w-1/2 flex flex-col items-start justify-start gap-2">
+                        <div className="w-full sm:w-1/2 flex flex-col items-start justify-start gap-2">
                             <label
                                 htmlFor="category"
                                 className="text-sm text-text-main font-medium"
@@ -127,8 +156,8 @@ function AddProduct() {
                     </div>
 
                     {/* quantity and category  */}
-                    <div className="w-full flex items-center justify-between">
-                        <div className="w-1/2 flex flex-col items-start justify-start gap-2">
+                    <div className="w-full flex flex-col sm:flex-row gap-6 sm:gap-0 sm:items-center sm:justify-between">
+                        <div className="w-full flex flex-col items-start justify-start gap-2">
                             <div className="w-ful flex flex-col items-start gap-1">
                                 <label
                                     htmlFor="originalPrice"
@@ -152,8 +181,8 @@ function AddProduct() {
                                 </p>
                             )}
                         </div>
-                        <div className="w-1/2 flex flex-col items-start justify-start gap-2">
-                            <div className="w-ful flex flex-col items-start gap-1">
+                        <div className="w-full flex flex-col items-start justify-start gap-2">
+                            <div className="w-full flex flex-col items-start gap-1">
                                 <label
                                     htmlFor="salePrice"
                                     className="text-sm font-medium text-text-main"
@@ -179,10 +208,10 @@ function AddProduct() {
                     </div>
 
                     {/* sale start time and end time  */}
-                    <div className="w-full flex items-center justify-between">
-                        <div className="w-1/2 flex flex-col items-start gap-2">
-                            <div className="flex items-center gap-2">
-                                <label className="font-sm font-medium text-text-main">
+                    <div className="w-full flex flex-col items-start justify-center gap-6">
+                        <div className="w-full flex flex-col items-start gap-2">
+                            <div className="flex items-center flex-wrap gap-2">
+                                <label className="text-sm font-medium text-text-main">
                                     Sale Start Time* :
                                 </label>
                                 <input
@@ -200,56 +229,65 @@ function AddProduct() {
                                 </p>
                             )}
                         </div>
-                        <div className="w-1/2">
-                            <div className="w-full flex flex-col items-start gap-2">
-                                <div className="w-full flex items-center justify-start gap-1">
-                                    <label className="text-sm font-medium text-text-main">
-                                        Sale End Time* :
-                                    </label>
-                                    <input
-                                        type="datetime-local"
-                                        {...register("saleEndTime", {
-                                            required:
-                                                "Sale End time is required",
-                                        })}
-                                        className="cursor-pointer p-1 border-2 border-border outline-0 focus:border-border-focus hover:border-border-focus rounded-lg"
-                                    />
-                                </div>
-                                {errors.saleEndTime && (
-                                    <p className="text-sm font-medium text-error">
-                                        {errors.saleEndTime.message}
-                                    </p>
-                                )}
+                        <div className="w-full flex flex-col items-start gap-2">
+                            <div className="w-full flex flex-wrap items-center justify-start gap-1">
+                                <label className="text-sm font-medium text-text-main">
+                                    Sale End Time* :
+                                </label>
+                                <input
+                                    type="datetime-local"
+                                    {...register("saleEndTime", {
+                                        required: "Sale End time is required",
+                                    })}
+                                    className="cursor-pointer p-1 border-2 border-border outline-0 focus:border-border-focus hover:border-border-focus rounded-lg"
+                                />
                             </div>
+                            {errors.saleEndTime && (
+                                <p className="text-sm font-medium text-error">
+                                    {errors.saleEndTime.message}
+                                </p>
+                            )}
                         </div>
                     </div>
 
                     {/* image input */}
-                    <div className="w-full flex items-center justify-start gap-2">
-                        <label
-                            htmlFor="imageInput"
-                            className="text-sm font-medium text-text-main"
-                        >
-                            Upload Image* :
-                        </label>
-                        <input
-                            id="imageInput"
-                            type="file"
-                            {...register("productImage", {
-                                required: "Product image is required",
-                            })}
-                            className="block cursor-pointer text-sm text-text-body file:px-4 file:mr-4 file:py-1 file:border file:border-border-focus file:rounded-lg file:text-sm file:font-semibold hover:file:bg-surface"
-                        />
+                    <div className="w-full flex flex-col items-start justify-center gap-2">
+                        <div className="w-full flex flex-wrap items-center justify-start gap-2">
+                            <label
+                                htmlFor="image"
+                                className="text-sm font-medium text-text-main"
+                            >
+                                Upload Image* :
+                            </label>
+                            <input
+                                id="image"
+                                type="file"
+                                accept="image/*"
+                                {...register("image", {
+                                    required: "Product image is required",
+                                })}
+                                className="block cursor-pointer text-sm text-text-body file:px-4 file:mr-4 file:py-1 file:border file:border-border-focus file:rounded-lg file:text-sm file:font-semibold hover:file:bg-surface"
+                            />
+                        </div>
+                        {errors.image && (
+                            <p className="text-sm text-error font-medium">
+                                {errors.image.message}
+                            </p>
+                        )}
                     </div>
 
                     {/* form buttons */}
                     <div className="w-full flex items-center justify-end gap-4">
-                        <button type="button" className="text-text-main">
+                        <button
+                            type="button"
+                            onClick={() => handleCancel()}
+                            className="text-text-main"
+                        >
                             Cancel
                         </button>
                         <button
                             type="submit"
-                            className="bg-btn-primary hover:bg-btn-hover hover:cursor-pointer text-btn-text font-medium px-4 py-1.5 rounded-xl"
+                            className="bg-btn-primary hover:bg-btn-hover hover:cursor-pointer text-btn-text font-medium px-4 py-1.5 rounded-xl active:scale-[0.99] transition-all duration-100 ease-in"
                         >
                             Add
                         </button>

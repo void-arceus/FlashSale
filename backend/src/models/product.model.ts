@@ -1,6 +1,5 @@
 // product.model.ts
 import mongoose, { Schema, Document } from "mongoose";
-import { timeStamp } from "node:console";
 
 interface product extends Document {
     productName: string;
@@ -14,6 +13,7 @@ interface product extends Document {
     saleEndTime: Date;
     createdAt: Date;
     updatedAt: Date;
+    adminId?: string;
 }
 
 const productSchema = new Schema<product>(
@@ -27,6 +27,11 @@ const productSchema = new Schema<product>(
         category: { type: String, required: true, trim: true },
         saleStartTime: { type: Date },
         saleEndTime: { type: Date },
+        adminId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            required: true,
+        },
     },
     { timestamps: true },
 );
