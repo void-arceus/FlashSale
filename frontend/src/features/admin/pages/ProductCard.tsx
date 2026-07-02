@@ -1,17 +1,29 @@
 // ProductCard.tsx
+import { deleteProduct } from "../../products/services/productService";
 import { useConfirmation } from "../../../context/ConfirmationContext";
+import { useToast } from "../../../context/ToastContext";
 
 export default function ProductCard({ product }: any) {
     const { showConfirmation } = useConfirmation();
+    const { showToaster } = useToast();
 
     const handleDeleteProduct = (id: string) => {
-        const message =
-            "Are you sure you want to delete this product. This Action can't be undone.";
-        showConfirmation(message, () => deleteProductHandler(id));
+        try {
+            console.log("I am here");
+            const message =
+                "Are you sure you want to delete this product. This Action can't be undone.";
+            showConfirmation(message, () => deleteProductHandler(id));
+        } catch (error: any) {
+            console.log(error.message);
+        }
     };
-
-    const deleteProductHandler = (id: string) => {
-        console.log(`Your product with id ${id} has been deleted`);
+    const deleteProductHandler = async (id: string) => {
+        const res = await deleteProduct(id);
+        if (res.status === true) {
+            showToaster(res.message, "success");
+        } else {
+            showToaster(res.message, "error");
+        }
     };
 
     return (

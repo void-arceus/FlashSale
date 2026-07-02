@@ -18,7 +18,7 @@ function Homepage() {
 
     return (
         <section className="pt-16 w-full flex items-center justify-center">
-            <main className="w-full max-w-6xl flex flex-col">
+            <main className="relative w-full max-w-6xl flex flex-col">
                 {/* testing displaying product data*/}
                 <h1 className="px-4 text-2xl font-semibold text-text-main mb-3">
                     All Products

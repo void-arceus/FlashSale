@@ -1,7 +1,10 @@
+import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { login } from "../services/authService";
 import { useAuth } from "../../../context/AuthContext";
+import { useToast } from "../../../context/ToastContext";
+import Loading from "../../../components/ui/Loading";
 
 interface LoginFormInputs {
     email: string;
@@ -15,24 +18,34 @@ function LoginPage() {
         handleSubmit,
         formState: { errors },
     } = useForm<LoginFormInputs>();
+    const [loading, setLoading] = useState<boolean>(false);
+    const { showToaster } = useToast();
 
     const { setUserData } = useAuth();
     const navigate = useNavigate();
 
     const onFormSubmit: SubmitHandler<LoginFormInputs> = async (data) => {
-        const res = await login(data);
-        if (res.status === true) {
-            setUserData(res.data);
-            if (res.data.role === "admin") {
-                navigate("/admin");
-            } else if (res.data.role === "user") {
-                navigate("/userDashboard");
+        try {
+            setLoading(true);
+            const res = await login(data);
+            if (res.status === true) {
+                showToaster(res.message, "success");
+                setUserData(res.data);
+                if (res.data.role === "admin") {
+                    navigate("/admin");
+                } else if (res.data.role === "user") {
+                    navigate("/userDashboard");
+                } else {
+                    console.log("404! Not Found");
+                }
             } else {
-                console.log("404! Not Found");
+                setUserData(null);
+                showToaster(res.message, "error");
             }
-        } else {
-            setUserData(null);
-            console.log(res.message);
+        } catch (error: any) {
+            setLoading(false);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -113,14 +126,14 @@ function LoginPage() {
                 <div className="w-full flex items-start">
                     <button
                         type="submit"
-                        className="w-full bg-btn-primary hover:bg-btn-hover text-btn-text py-3 rounded-lg hover:cursor-pointer font-medium active:scale-[0.96] transition-all duration-150"
+                        className="w-full bg-btn-primary hover:bg-btn-hover text-btn-text py-3 rounded-lg hover:cursor-pointer font-medium active:scale-[0.96] transition-all duration-150 flex items-center justify-center"
                     >
-                        Login
+                        {loading ? <Loading /> : "Login"}
                     </button>
                 </div>
                 <div>
                     <p className="text-sm font-medium">
-                        Don't have an account yet!{" "}
+                        Don't have an account yet! &nbsp;
                         <a
                             onClick={() => {
                                 navigate("/register");

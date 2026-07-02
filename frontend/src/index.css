@@ -15,6 +15,10 @@
         sans-serif;
 }
 
+body {
+    overflow-x: hidden;
+}
+
 @theme {
     /* --- Layout & Neutral Base --- */
     --color-primary-bg: #ffffff;

@@ -1,7 +1,10 @@
+import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { addProduct } from "../../products/services/productService";
 import { useNavigate } from "react-router-dom";
 import type { File } from "buffer";
+import { useToast } from "../../../context/ToastContext";
+import Loading from "../../../components/ui/Loading";
 
 export interface ProductInputType {
     productName: string;
@@ -23,6 +26,8 @@ function AddProduct() {
         formState: { errors },
     } = useForm<ProductInputType>({ defaultValues: { category: "" } });
     const navigate = useNavigate();
+    const { showToaster } = useToast();
+    const [loading, setLoading] = useState(false);
 
     const onFormSubmit: SubmitHandler<ProductInputType> = async (data) => {
         const formData = new FormData();
@@ -40,11 +45,19 @@ function AddProduct() {
                 );
             }
         });
-        const res = await addProduct(formData);
-        if (res.status === true) {
-            console.log(res.message);
-        } else {
-            console.log(res.message);
+        try {
+            setLoading(true);
+            const res = await addProduct(formData);
+            if (res.status === true) {
+                showToaster(res.message, "success");
+                reset();
+            } else {
+                showToaster(res.message, "error");
+            }
+        } catch (error: any) {
+            setLoading(false);
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -287,9 +300,9 @@ function AddProduct() {
                         </button>
                         <button
                             type="submit"
-                            className="bg-btn-primary hover:bg-btn-hover hover:cursor-pointer text-btn-text font-medium px-4 py-1.5 rounded-xl active:scale-[0.99] transition-all duration-100 ease-in"
+                            className="bg-btn-primary hover:bg-btn-hover hover:cursor-pointer text-btn-text font-medium px-4 py-1.5 rounded-xl active:scale-[0.99] transition-all duration-100 ease-in flex items-center justify-center"
                         >
-                            Add
+                            {loading ? <Loading /> : "Add"}
                         </button>
                     </div>
                 </form>

@@ -22,7 +22,7 @@ export const addProduct = async (
     data: any,
 ): Promise<{ status: boolean; message: string }> => {
     try {
-        const result = await axios.post(`${BASE_URL}/product/add`, data);
+        await axios.post(`${BASE_URL}/product/add`, data);
         const message = "Product added successfully";
         return { status: true, message: message };
     } catch (error: any) {
@@ -68,6 +68,21 @@ export const getProducts = async (): Promise<{
     } catch (error: any) {
         const message =
             error.response?.data?.message || "Failed to fetch products";
+        return { status: false, message: message };
+    }
+};
+
+// delete product
+export const deleteProduct = async (
+    id: string,
+): Promise<{ status: boolean; message: string }> => {
+    try {
+        await axios.post(`${BASE_URL}/product/delete/${id}`);
+        const message = "Product deleted Successfully!";
+        return { status: true, message: message };
+    } catch (error: any) {
+        const message =
+            error.resopnse?.data?.message || "Something went wrong!";
         return { status: false, message: message };
     }
 };

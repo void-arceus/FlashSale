@@ -2,19 +2,26 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { logout } from "../features/auth/services/authService";
 import { useConfirmation } from "../context/ConfirmationContext";
+import { useToast } from "../context/ToastContext";
 
 function Navbar() {
     const navigate = useNavigate();
     const { isLoggedIn, user, setUserData } = useAuth();
+    const { showConfirmation } = useConfirmation();
+    const { showToaster } = useToast();
 
     const handleLogout = async () => {
+        showConfirmation("Are you sure you want to Logout?", LogoutHandler);
+    };
+
+    const LogoutHandler = async () => {
         const res = await logout();
         if (res.status === true) {
-            console.log(res.message);
+            showToaster(res.message, "success");
             setUserData(null);
             navigate("/");
         } else {
-            console.error(res.message);
+            showToaster(res.message, "error");
             return;
         }
     };

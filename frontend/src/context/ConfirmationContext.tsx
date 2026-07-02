@@ -59,7 +59,7 @@ export const useConfirmation = (): ConfirmationContextType => {
     const context = useContext(ConfirmationContext);
     if (context === undefined) {
         throw new Error(
-            "useConfirmation must be used withing and Confirmation Provider",
+            "useConfirmation must be used within Confirmation Provider",
         );
     }
     return context;
