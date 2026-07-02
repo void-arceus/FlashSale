@@ -38,7 +38,7 @@ export const getAdminProducts = async (
 ): Promise<{
     status: boolean;
     message: string;
-    data?: Product;
+    data?: Product[];
 }> => {
     try {
         const res = await axios.get(`${BASE_URL}/product/products/${adminId}`);
@@ -46,7 +46,7 @@ export const getAdminProducts = async (
         return {
             status: true,
             message: message,
-            data: res.data.data as Product,
+            data: res.data.data as Product[],
         };
     } catch (error: any) {
         const message = error.response?.data?.message || "something went wrong";

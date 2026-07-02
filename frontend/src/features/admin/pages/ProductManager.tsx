@@ -8,7 +8,7 @@ import Loading from "../../../components/ui/Loading";
 
 function ProductManager() {
     const [products, setProducts] = useState<Product[] | undefined>([]);
-    const [productLoading, setProductLoading] = useState<boolean>(false);
+    const [productLoading, setProductLoading] = useState<boolean>(true);
     const navigate = useNavigate();
     const { user, loading } = useAuth();
 

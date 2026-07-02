@@ -9,7 +9,6 @@ export default function ProductCard({ product }: any) {
 
     const handleDeleteProduct = (id: string) => {
         try {
-            console.log("I am here");
             const message =
                 "Are you sure you want to delete this product. This Action can't be undone.";
             showConfirmation(message, () => deleteProductHandler(id));

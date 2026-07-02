@@ -2,13 +2,12 @@ import { useState } from "react";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { addProduct } from "../../products/services/productService";
 import { useNavigate } from "react-router-dom";
-import type { File } from "buffer";
 import { useToast } from "../../../context/ToastContext";
 import Loading from "../../../components/ui/Loading";
 
 export interface ProductInputType {
     productName: string;
-    image: File;
+    image: FileList | File;
     description: string;
     quantity: number;
     originalPrice: number;
@@ -33,8 +32,9 @@ function AddProduct() {
         const formData = new FormData();
 
         // add image to the formData object
-        if (data.image && data.image[0]) {
-            formData.append("image", data.image[0] as File);
+        const imageFile = (data.image as any)?.[0];
+        if (imageFile) {
+            formData.append("image", imageFile as File);
         }
 
         Object.keys(data).forEach((key) => {
