@@ -1,6 +1,7 @@
 // productService.ts
 
 import axios from "axios";
+import type { UpdatePayload } from "../../admin/pages/AddProduct";
 const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 export interface Product {
@@ -83,6 +84,28 @@ export const deleteProduct = async (
     } catch (error: any) {
         const message =
             error.resopnse?.data?.message || "Something went wrong!";
+        return { status: false, message: message };
+    }
+};
+
+// update product info
+export const updateProduct = async (
+    id: string,
+    data: UpdatePayload,
+): Promise<{ status: boolean; message: string }> => {
+    try {
+        const res = await axios.patch(
+            `${BASE_URL}/product/product/${id}`,
+            data,
+        );
+        const message = res.data?.message || "Product updated successfully";
+        return {
+            status: true,
+            message: message,
+        };
+    } catch (error: any) {
+        const message =
+            error.response?.data?.message || "Failed to updated Product Data";
         return { status: false, message: message };
     }
 };

@@ -60,7 +60,10 @@ function Navbar() {
                                 >
                                     Product Manager
                                 </li>
-                                <li className="text-sm font-semibold text-text-main hover:text-text-muted hover:cursor-pointer hover:underline">
+                                <li
+                                    onClick={() => navigate("/coordinator")}
+                                    className="text-sm font-semibold text-text-main hover:text-text-muted hover:cursor-pointer hover:underline"
+                                >
                                     Flash Sale Coordinator
                                 </li>
                                 <li className="text-sm font-semibold text-text-main hover:text-text-muted hover:cursor-pointer hover:underline">

@@ -11,6 +11,9 @@ import axios from "axios";
 import AdminDashboard from "./features/admin/pages/AdminDashboard";
 import ProductManager from "./features/admin/pages/ProductManager";
 import AddProduct from "./features/admin/pages/AddProduct";
+import SaleCoordinator from "./features/admin/pages/SaleCoordinator";
+import ProtectedRoutes from "./components/ProtectedRoutes";
+import { Unauthorized } from "./components/Unauthorized";
 import Toaster from "./components/ui/Toaster";
 axios.defaults.withCredentials = true;
 
@@ -26,6 +29,10 @@ function App() {
                             <ConfirmationModal />
                             <Routes>
                                 <Route path="/" element={<Homepage />} />
+                                <Route
+                                    path="/unauthorized"
+                                    element={<Unauthorized />}
+                                />
                                 <Route path="/login" element={<LoginPage />} />
                                 <Route
                                     path="/register"
@@ -34,17 +41,29 @@ function App() {
 
                                 {/* admin routes */}
                                 <Route
-                                    path="/adminDashboard"
-                                    element={<AdminDashboard />}
-                                />
-                                <Route
-                                    path="/productManager"
-                                    element={<ProductManager />}
-                                />
-                                <Route
-                                    path="addProduct"
-                                    element={<AddProduct />}
-                                />
+                                    element={
+                                        <ProtectedRoutes
+                                            allowedRoles={["admin"]}
+                                        />
+                                    }
+                                >
+                                    <Route
+                                        path="/adminDashboard"
+                                        element={<AdminDashboard />}
+                                    />
+                                    <Route
+                                        path="/productManager"
+                                        element={<ProductManager />}
+                                    />
+                                    <Route
+                                        path="addProduct"
+                                        element={<AddProduct />}
+                                    />
+                                    <Route
+                                        path="coordinator"
+                                        element={<SaleCoordinator />}
+                                    />
+                                </Route>
                             </Routes>
                         </Router>
                     </ConfirmationProvider>

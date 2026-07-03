@@ -32,8 +32,8 @@ function ProductManager() {
     };
 
     return (
-        <section className="pt-16 h-screen w-full flex items-center justify-center">
-            <main className="h-full w-full max-w-6xl flex flex-col items-start">
+        <main className="pt-16 h-screen w-full flex items-center justify-center">
+            <section className="h-full w-full max-w-6xl flex flex-col items-start">
                 <div className="w-full px-4 pt-2 flex items-center justify-between">
                     <h1 className="text-xl font-semibold text-text-main">
                         Your Products
@@ -69,8 +69,8 @@ function ProductManager() {
                         )}
                     </>
                 )}
-            </main>
-        </section>
+            </section>
+        </main>
     );
 }
 

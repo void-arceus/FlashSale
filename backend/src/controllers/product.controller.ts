@@ -2,8 +2,6 @@
 import { Request, Response } from "express";
 import { uploadImage } from "../utils/imagekit.util";
 import Product from "../models/product.model";
-import User from "../models/user.model";
-import { ResponsiveImageAttributes } from "@imagekit/nodejs/resources";
 
 export const addProduct = async (req: Request, res: Response) => {
     try {
@@ -83,7 +81,6 @@ export const deleteProduct = async (req: Request, res: Response) => {
     }
 };
 
-// getproducts  -> public route
 export const getProducts = async (req: Request, res: Response) => {
     try {
         /* 
@@ -129,5 +126,41 @@ export const getAdminProducts = async (
         return res
             .status(500)
             .json({ status: false, message: "Internal Server Error" });
+    }
+};
+
+// edit Product
+export const updateProduct = async (req: Request, res: Response) => {
+    try {
+        // get product info from the frontend here...
+        console.log("I am here");
+        const { data } = req.body;
+        const { productId } = req.params || null;
+
+        if (productId === null) {
+            return res.status(400).json({
+                status: false,
+                message: "Product key not provided",
+            });
+        }
+        for (const [key, value] of Object.entries(data)) {
+            if (value === undefined || value === null || value === "") {
+                return res
+                    .status(400)
+                    .json({ status: false, message: `${key} cannot be empty` });
+            }
+        }
+        console.log("Now i am here...");
+        await Product.updateOne({ _id: productId }, { $set: data });
+        return res.status(200).json({
+            status: true,
+            message: "Product updated successfully",
+        });
+    } catch (error: any) {
+        console.error(error.message);
+        return res.status(500).json({
+            status: false,
+            message: "Internal Server Error",
+        });
     }
 };

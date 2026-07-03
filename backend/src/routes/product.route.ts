@@ -7,6 +7,7 @@ import {
     deleteProduct,
     getAdminProducts,
     getProducts,
+    updateProduct,
 } from "../controllers/product.controller";
 import { validateProduct } from "../middlewares/product.middleware";
 
@@ -22,7 +23,7 @@ productRouter.post(
 );
 productRouter.get("/products/", getProducts);
 productRouter.get("/products/:adminId", authAdmin, getAdminProducts);
-
 productRouter.post("/delete/:id", authAdmin, deleteProduct);
+productRouter.patch("/product/:productId", authAdmin, updateProduct);
 
 export default productRouter;

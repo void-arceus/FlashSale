@@ -4,9 +4,11 @@ import { addProduct } from "../../products/services/productService";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../../../context/ToastContext";
 import { useLocation } from "react-router-dom";
+import { updateProduct } from "../../products/services/productService";
 import Loading from "../../../components/ui/Loading";
 
 export interface ProductInputType {
+    _id?: string;
     productName: string;
     image: FileList | File;
     description: string;
@@ -16,6 +18,10 @@ export interface ProductInputType {
     category: string;
     saleStartTime: Date;
     saleEndTime: Date;
+}
+
+export interface UpdatePayload {
+    data: Partial<ProductInputType>;
 }
 
 interface StateShape {
@@ -34,7 +40,7 @@ function AddProduct() {
         register,
         handleSubmit,
         reset,
-        formState: { errors },
+        formState: { errors, dirtyFields },
     } = useForm<ProductInputType>({
         defaultValues: {
             productName: existingProduct?.productName || "",
@@ -60,8 +66,53 @@ function AddProduct() {
     const [loading, setLoading] = useState(false);
 
     const onFormSubmit: SubmitHandler<ProductInputType> = async (data) => {
-        const formData = new FormData();
+        if (editing) {
+            const changedFields = (
+                Object.keys(dirtyFields) as Array<keyof ProductInputType>
+            ).reduce<Partial<ProductInputType>>((acc, key) => {
+                acc[key] = data[key] as any;
+                return acc;
+            }, {});
 
+            for (const [key, value] of Object.entries(changedFields)) {
+                if (
+                    value === undefined ||
+                    value === null ||
+                    String(value).trim() === ""
+                ) {
+                    showToaster(`${String(key)} cannot be empty!`, "error");
+                    return;
+                }
+            }
+
+            // call the update api
+            const newData: UpdatePayload = {
+                data: changedFields,
+            };
+
+            try {
+                setLoading(true);
+                // call api
+                const res = await updateProduct(
+                    existingProduct?._id as string,
+                    newData,
+                );
+                if (res.status === true) {
+                    showToaster(res.message, "success");
+                    reset();
+                    navigate("/productManager");
+                } else {
+                    showToaster(res.message, "error");
+                }
+            } catch (error: any) {
+                setLoading(false);
+            } finally {
+                setLoading(false);
+            }
+            return;
+        }
+
+        const formData = new FormData();
         // add image to the formData object
         const imageFile = (data.image as any)?.[0];
         if (imageFile) {
@@ -95,12 +146,12 @@ function AddProduct() {
 
     const handleCancel = () => {
         reset();
-        navigate("/");
+        navigate("/productManager");
         setEditing(false);
     };
 
     return (
-        <section className="w-full flex flex-col items-center justify-start h-screen pt-14">
+        <main className="w-full flex flex-col items-center justify-start h-screen pt-14">
             <div className="w-full max-w-6xl flex items-center justify-center px-4 pt-5">
                 <form
                     onSubmit={handleSubmit(onFormSubmit)}
@@ -313,7 +364,9 @@ function AddProduct() {
                                 type="file"
                                 accept="image/*"
                                 {...register("image", {
-                                    required: "Product image is required",
+                                    required: !editing
+                                        ? "Product image is required"
+                                        : "",
                                 })}
                                 className="block cursor-pointer text-sm text-text-body file:px-4 file:mr-4 file:py-1 file:border file:border-border-focus file:rounded-lg file:text-sm file:font-semibold hover:file:bg-surface"
                             />
@@ -343,7 +396,7 @@ function AddProduct() {
                     </div>
                 </form>
             </div>
-        </section>
+        </main>
     );
 }
 
