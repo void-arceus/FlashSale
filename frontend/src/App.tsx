@@ -34,7 +34,7 @@ function App() {
 
                                 {/* admin routes */}
                                 <Route
-                                    path="/admin"
+                                    path="/adminDashboard"
                                     element={<AdminDashboard />}
                                 />
                                 <Route

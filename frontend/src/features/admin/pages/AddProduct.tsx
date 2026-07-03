@@ -3,6 +3,7 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 import { addProduct } from "../../products/services/productService";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "../../../context/ToastContext";
+import { useLocation } from "react-router-dom";
 import Loading from "../../../components/ui/Loading";
 
 export interface ProductInputType {
@@ -17,13 +18,43 @@ export interface ProductInputType {
     saleEndTime: Date;
 }
 
+interface StateShape {
+    editing: boolean;
+    product: ProductInputType;
+}
+
 function AddProduct() {
+    const location = useLocation();
+    const state = location.state as StateShape | null;
+    const [editing, setEditing] = useState<boolean>(!!state?.editing);
+
+    const existingProduct = state?.product;
+
     const {
         register,
         handleSubmit,
         reset,
         formState: { errors },
-    } = useForm<ProductInputType>({ defaultValues: { category: "" } });
+    } = useForm<ProductInputType>({
+        defaultValues: {
+            productName: existingProduct?.productName || "",
+            description: existingProduct?.description || "",
+            quantity: Number(existingProduct?.quantity) || 0,
+            category: existingProduct?.category || "",
+            originalPrice: Number(existingProduct?.originalPrice) || 0,
+            salePrice: existingProduct?.salePrice || 0,
+            saleStartTime: existingProduct?.saleStartTime
+                ? (new Date(existingProduct.saleStartTime)
+                      .toISOString()
+                      .slice(0, 16) as any)
+                : "",
+            saleEndTime: existingProduct?.saleEndTime
+                ? (new Date(existingProduct.saleEndTime)
+                      .toISOString()
+                      .slice(0, 16) as any)
+                : "",
+        },
+    });
     const navigate = useNavigate();
     const { showToaster } = useToast();
     const [loading, setLoading] = useState(false);
@@ -58,12 +89,14 @@ function AddProduct() {
             setLoading(false);
         } finally {
             setLoading(false);
+            setEditing(false);
         }
     };
 
     const handleCancel = () => {
         reset();
         navigate("/");
+        setEditing(false);
     };
 
     return (
@@ -270,8 +303,11 @@ function AddProduct() {
                                 htmlFor="image"
                                 className="text-sm font-medium text-text-main"
                             >
-                                Upload Image* :
+                                {editing
+                                    ? "Update Product Image (optional)"
+                                    : "Upload Image* :"}
                             </label>
+
                             <input
                                 id="image"
                                 type="file"
@@ -302,7 +338,7 @@ function AddProduct() {
                             type="submit"
                             className="bg-btn-primary hover:bg-btn-hover hover:cursor-pointer text-btn-text font-medium px-4 py-1.5 rounded-xl active:scale-[0.99] transition-all duration-100 ease-in flex items-center justify-center"
                         >
-                            {loading ? <Loading /> : "Add"}
+                            {loading ? <Loading /> : editing ? "Update" : "Add"}
                         </button>
                     </div>
                 </form>

@@ -46,7 +46,10 @@ function Navbar() {
                     <>
                         {user && user.role === "admin" ? (
                             <ul className="flex items-center gap-4">
-                                <li className="text-sm font-semibold text-text-main hover:text-text-muted hover:cursor-pointer hover:underline">
+                                <li
+                                    onClick={() => navigate("/adminDashboard")}
+                                    className="text-sm font-semibold text-text-main hover:text-text-muted hover:cursor-pointer hover:underline"
+                                >
                                     Dashboard
                                 </li>
                                 <li

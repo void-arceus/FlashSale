@@ -6,6 +6,7 @@ interface ConfirmationContextType {
     showConfirmation: (message: string, onConfirmAction: () => void) => void;
     closeModal: () => void;
     triggerConfirm: () => void;
+    loading: boolean;
 }
 
 interface ConfirmationProviderProps {
@@ -20,6 +21,7 @@ export function ConfirmationProvider({ children }: ConfirmationProviderProps) {
     const [isActive, setIsActive] = useState<boolean>(false);
     const [text, setText] = useState<string>("");
     const [onConfirm, setOnConfirm] = useState<(() => void) | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
 
     const showConfirmation = (message: string, onConfirmAction: () => void) => {
         setText(message);
@@ -34,10 +36,17 @@ export function ConfirmationProvider({ children }: ConfirmationProviderProps) {
     };
 
     const triggerConfirm = () => {
-        if (onConfirm) {
-            onConfirm();
+        try {
+            setLoading(true);
+            if (onConfirm) {
+                onConfirm();
+            }
+        } catch (error: any) {
+            setLoading(false);
+        } finally {
+            closeModal();
+            setLoading(false);
         }
-        closeModal();
     };
 
     return (
@@ -48,6 +57,7 @@ export function ConfirmationProvider({ children }: ConfirmationProviderProps) {
                 showConfirmation,
                 closeModal,
                 triggerConfirm,
+                loading,
             }}
         >
             {children}

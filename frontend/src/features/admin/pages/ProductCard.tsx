@@ -2,10 +2,12 @@
 import { deleteProduct } from "../../products/services/productService";
 import { useConfirmation } from "../../../context/ConfirmationContext";
 import { useToast } from "../../../context/ToastContext";
+import { useNavigate } from "react-router-dom";
 
 export default function ProductCard({ product }: any) {
     const { showConfirmation } = useConfirmation();
     const { showToaster } = useToast();
+    const navigate = useNavigate();
 
     const handleDeleteProduct = (id: string) => {
         try {
@@ -26,7 +28,7 @@ export default function ProductCard({ product }: any) {
     };
 
     return (
-        <div className="w-full max-h-120 border border-border rounded-xl p-4 flex flex-col items-start gap-4 shadow-md">
+        <div className="w-full max-h-120 border border-border rounded-xl p-4 flex flex-col items-start justify-between gap-4 shadow-md">
             <div className="h-fit w-full overflow-hidden rounded-xl">
                 {/* image */}
                 <img
@@ -53,7 +55,14 @@ export default function ProductCard({ product }: any) {
                     </button>
                 </div>
                 <div className="w-full flex items-center justify-end gap-2">
-                    <button className="bg-primary-bg border border-border px-4 py-1.5 rounded-lg hover:cursor-pointer active:scale-[0.98] transition-all duration-100 ease-in shadow-xs hover:shadow-sm">
+                    <button
+                        onClick={() => {
+                            navigate("/addProduct", {
+                                state: { editing: true, product: product },
+                            });
+                        }}
+                        className="bg-primary-bg border border-border px-4 py-1.5 rounded-lg hover:cursor-pointer active:scale-[0.98] transition-all duration-100 ease-in shadow-xs hover:shadow-sm"
+                    >
                         Edit
                     </button>
                     <button

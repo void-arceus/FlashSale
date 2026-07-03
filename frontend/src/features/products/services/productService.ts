@@ -59,12 +59,12 @@ export const getAdminProducts = async (
 // get all products
 export const getProducts = async (): Promise<{
     status: boolean;
-    data?: Product;
+    data?: Product[];
     message?: string;
 }> => {
     try {
         const res = await axios.get(`${BASE_URL}/product/products`);
-        return { status: true, data: res.data.data as Product };
+        return { status: true, data: res.data.data as Product[] };
     } catch (error: any) {
         const message =
             error.response?.data?.message || "Failed to fetch products";

@@ -32,7 +32,7 @@ function LoginPage() {
                 showToaster(res.message, "success");
                 setUserData(res.data);
                 if (res.data.role === "admin") {
-                    navigate("/admin");
+                    navigate("/adminDashboard");
                 } else if (res.data.role === "user") {
                     navigate("/userDashboard");
                 } else {
