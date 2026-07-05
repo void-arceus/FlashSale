@@ -5,6 +5,7 @@ import {
     validateRegisterData,
     validateLoginData,
 } from "../validators/auth.validator";
+import { validateSaleData } from "../validators/sale.validator";
 
 export const validateRegister = (
     req: Request,
@@ -49,6 +50,28 @@ export const validateLogin = async (
         return next();
     } catch (error: any) {
         console.error(error.message);
+        return res
+            .status(500)
+            .json({ status: false, message: "Internal Server Error" });
+    }
+};
+
+export const validdateFlashSaleData = async (
+    req: Request,
+    res: Response,
+    next: NextFunction,
+) => {
+    try {
+        const { data } = req.body;
+        const result = validateSaleData(data);
+        if (result.status === false) {
+            return res.status(400).json({
+                status: false,
+                message: result.message,
+            });
+        }
+        return next();
+    } catch (error: any) {
         return res
             .status(500)
             .json({ status: false, message: "Internal Server Error" });

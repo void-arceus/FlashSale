@@ -1,5 +1,4 @@
 // auth.route.ts
-import { Request, Response } from "express";
 
 import express, { Router } from "express";
 import {

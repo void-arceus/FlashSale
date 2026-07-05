@@ -1,7 +1,7 @@
 // product.model.ts
 import mongoose, { Schema, Document } from "mongoose";
 
-interface product extends Document {
+export interface product extends Document {
     productName: string;
     url: string;
     description: string;
@@ -13,7 +13,7 @@ interface product extends Document {
     saleEndTime: Date;
     createdAt: Date;
     updatedAt: Date;
-    adminId?: string;
+    adminId: mongoose.Types.ObjectId;
 }
 
 const productSchema = new Schema<product>(

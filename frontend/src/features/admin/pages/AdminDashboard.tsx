@@ -35,7 +35,7 @@ export default function AdminDashboard() {
 
     return (
         <main className="w-full flex items-center justify-center">
-            <div className="w-full max-w-6xl px-4 py-6 space-y-4">
+            <div className="w-full max-w-6xl px-4 pt-16 space-y-4">
                 <header>
                     <h1 className="text-3xl font-bold tracking-tight">
                         Dashboard
