@@ -6,6 +6,7 @@ import {
     validateLoginData,
 } from "../validators/auth.validator";
 import { validateSaleData } from "../validators/sale.validator";
+import type { IFlashSale } from "../models/flashsale.model";
 
 export const validateRegister = (
     req: Request,
@@ -56,13 +57,13 @@ export const validateLogin = async (
     }
 };
 
-export const validdateFlashSaleData = async (
+export const validateFlashSaleData = async (
     req: Request,
     res: Response,
     next: NextFunction,
 ) => {
     try {
-        const { data } = req.body;
+        const data: IFlashSale = req.body.data;
         const result = validateSaleData(data);
         if (result.status === false) {
             return res.status(400).json({

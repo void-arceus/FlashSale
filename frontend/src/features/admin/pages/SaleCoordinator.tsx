@@ -3,9 +3,13 @@ import { getAdminProducts } from "../../products/services/productService";
 import type { Product } from "../../products/services/productService";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useAuth } from "../../../context/AuthContext";
+import { useToast } from "../../../context/ToastContext";
+import { ScheduleSale } from "../../products/services/flashsaleService";
+import Loading from "../../../components/ui/Loading";
 
 interface FlashSaleInput {
     productId: string;
+    adminId: string;
     originalPrice: number;
     salePrice: number;
     saleStartTime: string;
@@ -15,7 +19,9 @@ interface FlashSaleInput {
 export default function SaleCoordinator() {
     // get the product names and original price
     const [products, setProducts] = useState<Product[] | null>(null);
+    const [loading, setLoading] = useState<boolean>(false);
     const { user } = useAuth();
+    const { showToaster } = useToast();
 
     const {
         register,
@@ -43,8 +49,30 @@ export default function SaleCoordinator() {
     }, []);
 
     const onSubmit: SubmitHandler<FlashSaleInput> = async (data) => {
-        console.log("You form is being submitted", data);
-        // reset();
+        data.originalPrice = Number(selectedProduct?.originalPrice);
+        const formData = new FormData();
+        Object.keys(data).forEach((key) => {
+            formData.append(key, String(data[key as keyof FlashSaleInput]));
+        });
+
+        const obj = Object.fromEntries(formData.entries());
+        obj.adminId = String(user?.id);
+        const newData = {
+            data: obj,
+        };
+
+        try {
+            setLoading(true);
+            const res = await ScheduleSale(newData);
+            if (res.status === true) showToaster(res.message, "success");
+            else {
+                showToaster(res.message, "error");
+            }
+        } catch (error: any) {
+            setLoading(false);
+        } finally {
+            setLoading(false);
+        }
     };
 
     const getProducts = async () => {
@@ -233,9 +261,13 @@ export default function SaleCoordinator() {
                             </button>
                             <button
                                 type="submit"
-                                className="w-full px-4 py-2 rounded-lg bg-btn-primary text-sm text-btn-text font-medium hover:cursor-pointer hover:bg-btn-hover shadow-md hover:shadow-lg active:scale-[0.98] transition-scale duration-200 ease-in-out"
+                                className="w-full px-4 py-2 rounded-lg bg-btn-primary text-sm text-btn-text font-medium hover:cursor-pointer hover:bg-btn-hover shadow-md hover:shadow-lg active:scale-[0.98] transition-scale duration-200 ease-in-out flex items-center justify-center"
                             >
-                                Schedule Sale
+                                {loading ? (
+                                    <Loading size={5} />
+                                ) : (
+                                    "Schedule Sale"
+                                )}
                             </button>
                         </div>
                     </form>

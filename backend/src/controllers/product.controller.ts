@@ -133,7 +133,6 @@ export const getAdminProducts = async (
 export const updateProduct = async (req: Request, res: Response) => {
     try {
         // get product info from the frontend here...
-        console.log("I am here");
         const { data } = req.body;
         const { productId } = req.params || null;
 
@@ -150,7 +149,6 @@ export const updateProduct = async (req: Request, res: Response) => {
                     .json({ status: false, message: `${key} cannot be empty` });
             }
         }
-        console.log("Now i am here...");
         await Product.updateOne({ _id: productId }, { $set: data });
         return res.status(200).json({
             status: true,

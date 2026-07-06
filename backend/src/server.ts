@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import connectDB from "./config/db";
 import authRouter from "./routes/auth.route";
 import productRouter from "./routes/product.route";
+import flashSaleRouter from "./routes/flashsale.route";
 import cookieParser = require("cookie-parser");
 import cors, { CorsOptions } from "cors";
 dotenv.config();
@@ -40,6 +41,7 @@ app.get("/", (req: Request, res: Response) => {
 // routes
 app.use("/v1/auth", authRouter);
 app.use("/v1/product", productRouter);
+app.use("/v1/sale", flashSaleRouter);
 
 // connect to db
 connectDB().then(() => {

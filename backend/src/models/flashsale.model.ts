@@ -1,15 +1,16 @@
 import mongoose, { Schema } from "mongoose";
 import type { product } from "./product.model";
 
-interface FlashSale {
+export interface IFlashSale {
     productId: mongoose.Types.ObjectId | product;
     adminId: mongoose.Types.ObjectId;
+    originalPrice: number;
     salePrice: number;
     saleStartTime: Date;
     saleEndTime: Date;
 }
 
-const flashSchema = new Schema<FlashSale>(
+const flashSchema = new Schema<IFlashSale>(
     {
         productId: {
             type: mongoose.Schema.Types.ObjectId,
@@ -19,6 +20,10 @@ const flashSchema = new Schema<FlashSale>(
         adminId: {
             type: mongoose.Schema.Types.ObjectId,
             ref: "User",
+            required: true,
+        },
+        originalPrice: {
+            type: Number,
             required: true,
         },
         salePrice: {
@@ -37,6 +42,6 @@ const flashSchema = new Schema<FlashSale>(
     { timestamps: true },
 );
 
-const FlashSale = mongoose.model<FlashSale>("flashSale", flashSchema);
+const FlashSale = mongoose.model<IFlashSale>("flashSale", flashSchema);
 
 export default FlashSale;
