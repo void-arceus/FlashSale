@@ -8,6 +8,7 @@ export interface IFlashSale {
     salePrice: number;
     saleStartTime: Date;
     saleEndTime: Date;
+    saleQuantity: number;
 }
 
 const flashSchema = new Schema<IFlashSale>(
@@ -36,6 +37,10 @@ const flashSchema = new Schema<IFlashSale>(
         },
         saleEndTime: {
             type: Date,
+            required: true,
+        },
+        saleQuantity: {
+            type: Number,
             required: true,
         },
     },

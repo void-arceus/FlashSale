@@ -383,13 +383,13 @@ function AddProduct() {
                         <button
                             type="button"
                             onClick={() => handleCancel()}
-                            className="text-text-main"
+                            className="text-text-main text-sm font-medium cursor-pointer hover:underline hover:text-text-muted"
                         >
                             Cancel
                         </button>
                         <button
                             type="submit"
-                            className="bg-btn-primary hover:bg-btn-hover hover:cursor-pointer text-btn-text font-medium px-4 py-1.5 rounded-xl active:scale-[0.99] transition-all duration-100 ease-in flex items-center justify-center"
+                            className="bg-btn-primary hover:bg-btn-hover hover:cursor-pointer text-btn-text text-sm font-medium px-4 py-1.5 rounded-xl active:scale-[0.99] transition-all duration-100 ease-in flex items-center justify-center"
                         >
                             {loading ? <Loading /> : editing ? "Update" : "Add"}
                         </button>

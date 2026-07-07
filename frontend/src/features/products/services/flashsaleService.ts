@@ -25,3 +25,21 @@ export const ScheduleSale = async (
         };
     }
 };
+
+export const getAdminSales = async (): Promise<{
+    status: boolean;
+    message?: string;
+    data?: any;
+}> => {
+    try {
+        return {
+            status: true,
+        };
+    } catch (error: any) {
+        const message = error.response?.data?.message;
+        return {
+            status: false,
+            message: message,
+        };
+    }
+};

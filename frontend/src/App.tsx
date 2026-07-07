@@ -56,7 +56,7 @@ function App() {
                                         element={<ProductManager />}
                                     />
                                     <Route
-                                        path="addProduct"
+                                        path="/addProduct"
                                         element={<AddProduct />}
                                     />
                                     <Route
