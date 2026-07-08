@@ -121,7 +121,7 @@ function Navbar() {
                             onClick={() => {
                                 navigate("/login");
                             }}
-                            className="px-5 py-2 text-sm font-medium bg-btn-primary hover:bg-btn-hover rounded-full text-btn-text font-medium cursor-pointer"
+                            className="px-5 py-2 text-sm font-medium bg-btn-primary hover:bg-btn-hover rounded-full text-btn-text cursor-pointer"
                         >
                             Login/Register
                         </button>

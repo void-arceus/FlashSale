@@ -20,10 +20,10 @@ interface FlashSaleInput {
 }
 
 interface SaleFormProps {
-    handleShowScheduleSaleForm: () => void;
+    appendNewSaleData: (obj: any) => void;
 }
 
-function ScheduleSaleForm({ handleShowScheduleSaleForm }: SaleFormProps) {
+function ScheduleSaleForm({ appendNewSaleData }: SaleFormProps) {
     // get the product names and original price
     const [products, setProducts] = useState<Product[] | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
@@ -72,8 +72,9 @@ function ScheduleSaleForm({ handleShowScheduleSaleForm }: SaleFormProps) {
         try {
             setLoading(true);
             const res = await ScheduleSale(newData);
-            if (res.status === true) showToaster(res.message, "success");
-            else {
+            if (res.status === true) {
+                showToaster(res.message, "success");
+            } else {
                 showToaster(res.message, "error");
             }
         } catch (error: any) {
@@ -103,7 +104,7 @@ function ScheduleSaleForm({ handleShowScheduleSaleForm }: SaleFormProps) {
                 {/* form close button */}
                 <button
                     type="button"
-                    onClick={handleShowScheduleSaleForm}
+                    onClick={appendNewSaleData}
                     className="absolute right-3 top-3 hover:cursor-pointer hover:scale-102 transition-scale duration-100 ease-in"
                 >
                     <img

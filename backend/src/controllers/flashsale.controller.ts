@@ -2,6 +2,7 @@
 import mongoose from "mongoose";
 import { Request, Response } from "express";
 import type { IFlashSale } from "../models/flashsale.model";
+import type { product } from "../models/product.model";
 import Product from "../models/product.model";
 import FlashSale from "../models/flashsale.model";
 
@@ -28,10 +29,18 @@ export const ScheduleFlashSale = async (req: Request, res: Response) => {
             });
         }
 
+        // if valid Productid get the productData
+        const productDetail = (await Product.findById(
+            data.productId,
+        )) as product;
+        data.productDetails = productDetail;
+
         const sale = await FlashSale.create(data);
-        return res
-            .status(200)
-            .json({ status: true, message: "Sale Scheduled Successfully!" });
+        return res.status(200).json({
+            status: true,
+            message: "Sale Scheduled Successfully!",
+            data: data,
+        });
     } catch (error: any) {
         console.error(error.message);
         return res.status(500).json({

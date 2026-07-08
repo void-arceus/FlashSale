@@ -3,8 +3,17 @@ import { deleteProduct } from "../../products/services/productService";
 import { useConfirmation } from "../../../context/ConfirmationContext";
 import { useToast } from "../../../context/ToastContext";
 import { useNavigate } from "react-router-dom";
+import type { Product } from "../../products/services/productService";
 
-export default function ProductCard({ product }: any) {
+interface ProductCardProps {
+    product: Product;
+    handleReloadPage: () => void;
+}
+
+export default function ProductCard({
+    product,
+    handleReloadPage,
+}: ProductCardProps) {
     const { showConfirmation } = useConfirmation();
     const { showToaster } = useToast();
     const navigate = useNavigate();
@@ -21,6 +30,7 @@ export default function ProductCard({ product }: any) {
     const deleteProductHandler = async (id: string) => {
         const res = await deleteProduct(id);
         if (res.status === true) {
+            handleReloadPage();
             showToaster(res.message, "success");
         } else {
             showToaster(res.message, "error");

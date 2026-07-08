@@ -128,7 +128,7 @@ function LoginPage() {
                         type="submit"
                         className="w-full bg-btn-primary hover:bg-btn-hover text-btn-text py-3 rounded-lg hover:cursor-pointer font-medium active:scale-[0.96] transition-all duration-150 flex items-center justify-center"
                     >
-                        {loading ? <Loading /> : "Login"}
+                        {loading ? <Loading size={5} /> : "Login"}
                     </button>
                 </div>
                 <div>

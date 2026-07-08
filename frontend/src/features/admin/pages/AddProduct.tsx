@@ -389,9 +389,15 @@ function AddProduct() {
                         </button>
                         <button
                             type="submit"
-                            className="bg-btn-primary hover:bg-btn-hover hover:cursor-pointer text-btn-text text-sm font-medium px-4 py-1.5 rounded-xl active:scale-[0.99] transition-all duration-100 ease-in flex items-center justify-center"
+                            className="bg-btn-primary hover:bg-btn-hover hover:cursor-pointer text-btn-text text-sm font-medium px-4 py-1.5 rounded-lg active:scale-[0.99] transition-all duration-100 ease-in flex items-center justify-center"
                         >
-                            {loading ? <Loading /> : editing ? "Update" : "Add"}
+                            {loading ? (
+                                <Loading size={5} />
+                            ) : editing ? (
+                                "Update"
+                            ) : (
+                                "Add"
+                            )}
                         </button>
                     </div>
                 </form>

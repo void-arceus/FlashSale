@@ -1,24 +1,89 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ScheduleSaleForm from "./ScheduleSaleForm";
+import { useAuth } from "../../../context/AuthContext";
+import { getAdminSales } from "../../products/services/flashsaleService";
+import SaleCard from "./SaleCard";
+import { deleteSale } from "../../products/services/flashsaleService";
+import { useToast } from "../../../context/ToastContext";
+import { useConfirmation } from "../../../context/ConfirmationContext";
+
+export interface SaleDateInterface {
+    _id: string;
+    productId: string;
+    adminId: string;
+    originalPrice: number;
+    salePrice: number;
+    saleStartTime: Date;
+    saleEndTime: Date;
+    saleQuantity: number;
+}
 
 function SaleCoordinator() {
     const [showScheduleSaleForm, setShowScheduleSaleForm] =
         useState<boolean>(false);
+    const [saleData, setSaleData] = useState<any | []>([]);
+    const [loading, setLoading] = useState<boolean>(false);
+    const { showToaster } = useToast();
+    const { showConfirmation } = useConfirmation();
+    const { user } = useAuth();
 
     const handleShowScheduleSaleForm = () => {
         setShowScheduleSaleForm((prev) => !prev);
     };
 
+    useEffect(() => {
+        handleGetAdminSales();
+    }, []);
+
+    function deleteHandler(id: string) {
+        showConfirmation(
+            "Are you sure you want to delete this sale? This action cannot be undone",
+            () => handleDeleteSale(id),
+        );
+    }
+
+    async function handleDeleteSale(id: string) {
+        try {
+            setLoading(true);
+            const res = await deleteSale(id);
+            if (res.status === true) {
+                setSaleData((prev: any) =>
+                    prev.filter((data: any) => data._id !== id),
+                );
+                showToaster(res.message, "success");
+            } else {
+                showToaster(res.message, "error");
+            }
+        } catch (error: any) {
+            setLoading(false);
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const handleGetAdminSales = async () => {
+        try {
+            if (user) {
+                const res = await getAdminSales(user?.id);
+                setSaleData(res.data.data);
+            }
+        } catch (error: any) {
+            setSaleData(null);
+        }
+    };
+
+    function appendNewSaleData(obj: any) {
+        setSaleData((prev: any) => [obj, ...prev]);
+    }
+
     return (
         <main className="relative h-screen w-full flex flex-col items-center">
             {/* header */}
             {showScheduleSaleForm ? (
-                <ScheduleSaleForm
-                    handleShowScheduleSaleForm={handleShowScheduleSaleForm}
-                />
+                <ScheduleSaleForm appendNewSaleData={handleDeleteSale} />
             ) : null}
-            <section className="w-full max-w-6xl pt-16 px-4 ">
-                <div className="flex flex-col gap-3 items-start justify-center">
+            <section className="w-full max-w-6xl pt-18 px-4 flex flex-col items-center gap-4">
+                <div className="w-full flex xs:flex-row xs:items-center xs:justify-between flex-col gap-2 items-start justify-center">
                     <h1 className="text-lg text-text-primary font-semibold">
                         Sale Coordinator
                     </h1>
@@ -29,6 +94,23 @@ function SaleCoordinator() {
                         Schedule Sale +
                     </button>
                 </div>
+
+                <hr className="w-full border border-border" />
+
+                {saleData ? (
+                    <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {saleData.map((data: any) => (
+                            <SaleCard
+                                key={data._id}
+                                data={data}
+                                loading={loading}
+                                deleteHandler={deleteHandler}
+                            />
+                        ))}
+                    </div>
+                ) : (
+                    <div>No Sales Found!</div>
+                )}
             </section>
         </main>
     );

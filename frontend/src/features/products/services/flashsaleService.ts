@@ -7,6 +7,7 @@ export const ScheduleSale = async (
 ): Promise<{
     status: boolean;
     message: string;
+    data?: any;
 }> => {
     try {
         const res = await axios.post(`${BASE_URL}/sale/flashsale`, data);
@@ -15,6 +16,7 @@ export const ScheduleSale = async (
         return {
             status: true,
             message: message,
+            data: res.data.data,
         };
     } catch (error: any) {
         const message =
@@ -26,17 +28,43 @@ export const ScheduleSale = async (
     }
 };
 
-export const getAdminSales = async (): Promise<{
+export const getAdminSales = async (
+    id: string,
+): Promise<{
     status: boolean;
     message?: string;
     data?: any;
 }> => {
     try {
+        const res = await axios.get(`${BASE_URL}/sale/mySales/${id}`);
         return {
             status: true,
+            data: res.data,
         };
     } catch (error: any) {
         const message = error.response?.data?.message;
+        return {
+            status: false,
+            message: message,
+        };
+    }
+};
+
+export const deleteSale = async (
+    id: string,
+): Promise<{
+    status: boolean;
+    message: string;
+}> => {
+    try {
+        await axios.delete(`${BASE_URL}/sale/delete/${id}`);
+        return {
+            status: true,
+            message: "Sale deleted Successfully",
+        };
+    } catch (error: any) {
+        const message =
+            error.response?.data?.message || "Something went wrong!";
         return {
             status: false,
             message: message,

@@ -36,7 +36,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
             const res = await getCurrentUser();
             if (res.status === true) {
                 setUser(res.data as userDataType);
-                console.log(res.data);
             } else {
                 setUser(null);
             }

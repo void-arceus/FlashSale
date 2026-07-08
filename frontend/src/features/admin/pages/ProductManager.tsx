@@ -11,12 +11,15 @@ function ProductManager() {
     const [productLoading, setProductLoading] = useState<boolean>(true);
     const navigate = useNavigate();
     const { user, loading } = useAuth();
+    const [reloadPage, setReloadPage] = useState<boolean>(false);
 
     useEffect(() => {
         if (!loading && user) {
             AdminProducts(user.id);
         }
-    }, [loading, user]);
+    }, [reloadPage, loading, user]);
+
+    const handleReloadPage = () => setReloadPage((prev) => !prev);
 
     // get admin products
     const AdminProducts = async (id: string) => {
@@ -42,7 +45,7 @@ function ProductManager() {
                         onClick={() => {
                             navigate("/addProduct");
                         }}
-                        className="px-3 py-1.5 bg-btn-primary rounded-xl text-btn-text font-medium hover:cursor-pointer hover:bg-btn-hover active:scale-[0.96]"
+                        className="px-3 py-1.5 bg-btn-primary rounded-lg text-btn-text font-medium hover:cursor-pointer hover:bg-btn-hover active:scale-[0.96]"
                     >
                         Add Product +
                     </button>
@@ -61,6 +64,7 @@ function ProductManager() {
                                     <ProductCard
                                         product={product}
                                         key={product._id}
+                                        handleReloadPage={handleReloadPage}
                                     />
                                 ))}
                             </div>
