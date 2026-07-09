@@ -9,7 +9,7 @@ export interface IFlashSale {
     saleStartTime: Date;
     saleEndTime: Date;
     saleQuantity: number;
-    productDetails?: product;
+    productDetail?: product;
 }
 
 const flashSchema = new Schema<IFlashSale>(

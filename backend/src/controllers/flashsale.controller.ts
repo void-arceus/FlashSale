@@ -29,17 +29,22 @@ export const ScheduleFlashSale = async (req: Request, res: Response) => {
             });
         }
 
+        const sale = await FlashSale.create(data);
+
         // if valid Productid get the productData
         const productDetail = (await Product.findById(
             data.productId,
         )) as product;
-        data.productDetails = productDetail;
 
-        const sale = await FlashSale.create(data);
+        const response = {
+            ...sale.toObject(),
+            productDetail: productDetail,
+        };
+
         return res.status(200).json({
             status: true,
             message: "Sale Scheduled Successfully!",
-            data: data,
+            data: response,
         });
     } catch (error: any) {
         console.error(error.message);
@@ -104,8 +109,6 @@ export const getAdminSales = async (req: Request, res: Response) => {
             },
         ]);
 
-        console.log("Products:", products);
-
         return res.status(200).json({
             status: true,
             message: "Sales fetched successfully",
@@ -122,20 +125,39 @@ export const updateSale = async (req: Request, res: Response) => {
     try {
         const id = req.params.id || null;
         const { data } = req.body;
+        console.log(req.body);
         if (!id) {
             return res.status(400).json({
                 status: false,
                 message: "Sale id not provided",
             });
         }
+
         const updatedData = await FlashSale.findByIdAndUpdate(
             { _id: id },
-            { data },
+            { $set: data },
+            { new: true },
         );
+
+        // get updated Product Info
+        const product = await Product.findById(updatedData?.productId);
+        if (!product) {
+            return res.status(404).json({
+                status: false,
+                message: "Invalid Product Id",
+            });
+        }
+        const response = {
+            ...updatedData?.toObject(),
+            productDetail: product,
+        };
+
+        console.log("Updated sale:", response);
+
         return res.status(200).json({
             status: true,
             message: "Sale updated successfully",
-            data: updatedData,
+            data: response,
         });
     } catch (error: any) {
         return res.status(500).json({

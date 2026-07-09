@@ -23,6 +23,6 @@ saleRouter.post(
 saleRouter.get("/sales", getAllSales);
 saleRouter.get("/mysales/:id", authAdmin, getAdminSales);
 saleRouter.delete("/delete/:id", authAdmin, deleteSale);
-saleRouter.patch("/sale/:id", authAdmin, updateSale);
+saleRouter.patch("/update/:id", authAdmin, updateSale);
 
 export default saleRouter;

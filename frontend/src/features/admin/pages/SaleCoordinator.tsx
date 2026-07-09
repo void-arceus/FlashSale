@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import ScheduleSaleForm from "./ScheduleSaleForm";
+import ScheduleSaleForm, { type FlashSaleInput } from "./ScheduleSaleForm";
 import { useAuth } from "../../../context/AuthContext";
 import { getAdminSales } from "../../products/services/flashsaleService";
 import SaleCard from "./SaleCard";
@@ -7,7 +7,7 @@ import { deleteSale } from "../../products/services/flashsaleService";
 import { useToast } from "../../../context/ToastContext";
 import { useConfirmation } from "../../../context/ConfirmationContext";
 
-export interface SaleDateInterface {
+export interface SaleDataInterface {
     _id: string;
     productId: string;
     adminId: string;
@@ -21,15 +21,35 @@ export interface SaleDateInterface {
 function SaleCoordinator() {
     const [showScheduleSaleForm, setShowScheduleSaleForm] =
         useState<boolean>(false);
-    const [saleData, setSaleData] = useState<any | []>([]);
+    const [saleData, setSaleData] = useState<FlashSaleInput[] | []>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const { showToaster } = useToast();
     const { showConfirmation } = useConfirmation();
     const { user } = useAuth();
 
-    const handleShowScheduleSaleForm = () => {
-        setShowScheduleSaleForm((prev) => !prev);
+    // states for editing the existing sale
+    const [isEditing, setIsEditing] = useState<boolean>(false);
+    const [saleToUpdate, setSaleToUpdate] = useState<FlashSaleInput | null>(
+        null,
+    );
+
+    const handleSetSaleToUpdate = (obj: any) => {
+        setSaleToUpdate(obj);
     };
+
+    function handleIsEditing() {
+        setIsEditing((prev) => !prev);
+    }
+
+    async function handleUpdateSaleData(obj: FlashSaleInput) {
+        setSaleData((prev) =>
+            prev.map((sale) => (sale._id === obj._id ? obj : sale)),
+        );
+    }
+
+    function handleShowScheduleSaleForm() {
+        setShowScheduleSaleForm((prev) => !prev);
+    }
 
     useEffect(() => {
         handleGetAdminSales();
@@ -65,10 +85,14 @@ function SaleCoordinator() {
         try {
             if (user) {
                 const res = await getAdminSales(user?.id);
-                setSaleData(res.data.data);
+                const sorted = res.data.data.toSorted(
+                    (a: any, b: any) =>
+                        new Date(a.saleStartTime) > new Date(b.saleStartTime),
+                );
+                setSaleData(sorted);
             }
         } catch (error: any) {
-            setSaleData(null);
+            setSaleData([]);
         }
     };
 
@@ -80,7 +104,14 @@ function SaleCoordinator() {
         <main className="relative h-screen w-full flex flex-col items-center">
             {/* header */}
             {showScheduleSaleForm ? (
-                <ScheduleSaleForm appendNewSaleData={handleDeleteSale} />
+                <ScheduleSaleForm
+                    handleShowScheduleSaleForm={handleShowScheduleSaleForm}
+                    appendNewSaleData={appendNewSaleData}
+                    isEditing={isEditing}
+                    handleIsEditing={handleIsEditing}
+                    saleToUpdate={saleToUpdate}
+                    handleUpdateSaleData={handleUpdateSaleData}
+                />
             ) : null}
             <section className="w-full max-w-6xl pt-18 px-4 flex flex-col items-center gap-4">
                 <div className="w-full flex xs:flex-row xs:items-center xs:justify-between flex-col gap-2 items-start justify-center">
@@ -104,7 +135,12 @@ function SaleCoordinator() {
                                 key={data._id}
                                 data={data}
                                 loading={loading}
+                                handleSetSaleToUpdate={handleSetSaleToUpdate}
+                                handleShowScheduleSaleForm={
+                                    handleShowScheduleSaleForm
+                                }
                                 deleteHandler={deleteHandler}
+                                handleIsEditing={handleIsEditing}
                             />
                         ))}
                     </div>

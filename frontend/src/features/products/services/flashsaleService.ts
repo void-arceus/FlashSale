@@ -71,3 +71,23 @@ export const deleteSale = async (
         };
     }
 };
+
+export const updateSale = async (
+    id: string,
+    data: any,
+): Promise<{
+    status: boolean;
+    message: string;
+    data?: any;
+}> => {
+    try {
+        const res = await axios.patch(`${BASE_URL}/sale/update/${id}`, data);
+        console.log("Updated data:", data);
+        const message = "Sale updated successfully!";
+        return { status: true, message: message, data: res.data.data };
+    } catch (error: any) {
+        const message =
+            error.response?.data?.message || "Failed to update sale!";
+        return { status: false, message: message };
+    }
+};

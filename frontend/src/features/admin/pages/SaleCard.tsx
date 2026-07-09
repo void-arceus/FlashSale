@@ -11,11 +11,23 @@ interface CountDownTimer {
 interface SaleCardProps {
     data: any;
     loading: boolean;
+    handleIsEditing: () => void;
+    handleShowScheduleSaleForm: () => void;
+    handleSetSaleToUpdate: (obj: any) => void;
     deleteHandler: (id: string) => void;
 }
 
-function SaleCard({ data, loading, deleteHandler }: SaleCardProps) {
+function SaleCard({
+    data,
+    loading,
+    handleSetSaleToUpdate,
+    handleShowScheduleSaleForm,
+    deleteHandler,
+    handleIsEditing,
+}: SaleCardProps) {
     const [status, setStatus] = useState<string>("");
+    const [deleteSaleId, setDeleteSaleId] = useState<string>("");
+
     const [countDown, setCountDown] = useState<CountDownTimer>({
         days: 0,
         hours: 0,
@@ -113,30 +125,30 @@ function SaleCard({ data, loading, deleteHandler }: SaleCardProps) {
                               : ""}
                     </p>
                     <div className="flex items-center gap-2 px-2 py-1.5 bg-black/90 rounded-lg">
-                        <div className="bg-surface p-1 rounded-sm">
-                            <p className="text-text-main font-medium text-sm">
+                        <div className="bg-surface w-9 h-8 rounded-sm flex items-center justify-center">
+                            <p className="text-text-main font-semibold text-sm">
                                 {countDown.days + "d"}
                             </p>
                         </div>
                         <p className="text-lg font-medium text-primary-bg">:</p>
-                        <div className="bg-surface p-1 rounded-sm">
-                            <p className="text-text-main font-medium text-sm">
+                        <div className="bg-surface w-9 h-8 rounded-sm flex items-center justify-center">
+                            <p className="text-text-main font-semibold text-sm">
                                 {(countDown.hours < 10
                                     ? "0" + countDown.hours
                                     : countDown.hours) + "h"}
                             </p>
                         </div>
                         <p className="text-lg font-medium text-primary-bg">:</p>
-                        <div className="bg-surface p-1 rounded-sm">
-                            <p className="text-text-main font-medium text-sm">
+                        <div className="bg-surface w-9 h-8 rounded-sm flex items-center justify-center">
+                            <p className="text-text-main font-semibold text-sm">
                                 {(countDown.minutes < 10
                                     ? "0" + countDown.minutes
                                     : countDown.minutes) + "m"}
                             </p>
                         </div>
                         <p className="text-lg font-medium text-primary-bg">:</p>
-                        <div className="bg-surface p-1 rounded-sm">
-                            <p className="text-text-main font-medium text-sm">
+                        <div className="bg-surface w-9 h-8 rounded-sm flex items-center justify-center">
+                            <p className="text-text-main font-semibold text-sm">
                                 {(countDown.seconds < 10
                                     ? "0" + countDown.seconds
                                     : countDown.seconds) + "s"}
@@ -148,14 +160,14 @@ function SaleCard({ data, loading, deleteHandler }: SaleCardProps) {
             {/* product info */}
             <div className="w-full flex-2 flex flex-col items-start justify-center gap-1.5">
                 <h2 className="text-lg font-bold text-text-main">
-                    {data.productDetail?.productName}
+                    {data.productDetail.productName}
                 </h2>
                 <p className="text-sm text-text-main font-semibold">
                     Original Price: &nbsp;
                     <span className="text-sm text-text-muted font-semibold">
                         ₹
                         {new Intl.NumberFormat("en-IN").format(
-                            data.originalPrice,
+                            data.productDetail.originalPrice,
                         )}
                     </span>
                 </p>
@@ -185,15 +197,31 @@ function SaleCard({ data, loading, deleteHandler }: SaleCardProps) {
                 </p>
             </div>
             <div className="w-full flex items-center justify-end gap-2">
-                <button className="px-4 py-2 text-text-main text-sm font-medium hover:cursor-pointer hover:text-text-muted hover:underline">
+                <button
+                    onClick={() => {
+                        if (handleShowScheduleSaleForm) {
+                            handleIsEditing();
+                            handleSetSaleToUpdate(data);
+                            handleShowScheduleSaleForm();
+                        }
+                    }}
+                    className="px-4 py-2 text-text-main text-sm font-medium hover:cursor-pointer hover:text-text-muted hover:underline"
+                >
                     Edit
                 </button>
                 <button
                     type="button"
-                    onClick={() => deleteHandler(data._id)}
+                    onClick={() => {
+                        setDeleteSaleId(data._id);
+                        deleteHandler(data._id);
+                    }}
                     className="px-4 py-2 bg-btn-primary hover:bg-btn-hover rounded-lg hover:cursor-pointer text-btn-text text-sm font-medium shadow-sm hover:shadow-lg active:scale-[0.96] transform-scale duration-200 ease-in-out flex items-center justify-center"
                 >
-                    {loading ? <Loading /> : "Delete"}
+                    {deleteSaleId === data._id && loading ? (
+                        <Loading />
+                    ) : (
+                        "Delete"
+                    )}
                 </button>
             </div>
         </div>

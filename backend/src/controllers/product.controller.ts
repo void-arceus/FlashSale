@@ -130,7 +130,10 @@ export const getAdminProducts = async (
 };
 
 // edit Product
-export const updateProduct = async (req: Request, res: Response) => {
+export const updateProduct = async (
+    req: Request,
+    res: Response,
+): Promise<Response | any> => {
     try {
         // get product info from the frontend here...
         const { data } = req.body;
@@ -149,10 +152,15 @@ export const updateProduct = async (req: Request, res: Response) => {
                     .json({ status: false, message: `${key} cannot be empty` });
             }
         }
-        await Product.updateOne({ _id: productId }, { $set: data });
+        const updatedProduct = await Product.findByIdAndUpdate(
+            { _id: productId },
+            { $set: data },
+            { new: true },
+        );
         return res.status(200).json({
             status: true,
             message: "Product updated successfully",
+            data: updatedProduct,
         });
     } catch (error: any) {
         console.error(error.message);
