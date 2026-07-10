@@ -8,6 +8,7 @@ import {
     getAllSales,
     ScheduleFlashSale,
     updateSale,
+    getSingleSale,
 } from "../controllers/flashsale.controller";
 import { validateFlashSaleData } from "../middlewares/validate.middleware";
 
@@ -21,6 +22,7 @@ saleRouter.post(
 );
 
 saleRouter.get("/sales", getAllSales);
+saleRouter.get("/sales/:id", getSingleSale);
 saleRouter.get("/mysales/:id", authAdmin, getAdminSales);
 saleRouter.delete("/delete/:id", authAdmin, deleteSale);
 saleRouter.patch("/update/:id", authAdmin, updateSale);

@@ -15,6 +15,8 @@ import SaleCoordinator from "./features/admin/pages/SaleCoordinator";
 import ProtectedRoutes from "./components/ProtectedRoutes";
 import { Unauthorized } from "./components/Unauthorized";
 import Toaster from "./components/ui/Toaster";
+import Sales from "./features/user/pages/Sales";
+import ProductDetail from "./features/user/pages/ProductDetail";
 axios.defaults.withCredentials = true;
 
 function App() {
@@ -37,6 +39,13 @@ function App() {
                                 <Route
                                     path="/register"
                                     element={<RegisterPage />}
+                                />
+
+                                {/* user routes */}
+                                <Route path="/sales" element={<Sales />} />
+                                <Route
+                                    path="/productDetail"
+                                    element={<ProductDetail />}
                                 />
 
                                 {/* admin routes */}

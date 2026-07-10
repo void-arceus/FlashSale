@@ -1,6 +1,7 @@
 // flashsaleService.ts
 import axios from "axios";
 const BASE_URL = import.meta.env.VITE_BACKEND_URL;
+import type { FlashSaleInput } from "../../admin/pages/ScheduleSaleForm";
 
 export const ScheduleSale = async (
     data: any,
@@ -33,13 +34,13 @@ export const getAdminSales = async (
 ): Promise<{
     status: boolean;
     message?: string;
-    data?: any;
+    data?: FlashSaleInput;
 }> => {
     try {
         const res = await axios.get(`${BASE_URL}/sale/mySales/${id}`);
         return {
             status: true,
-            data: res.data,
+            data: res.data as FlashSaleInput,
         };
     } catch (error: any) {
         const message = error.response?.data?.message;
@@ -47,6 +48,26 @@ export const getAdminSales = async (
             status: false,
             message: message,
         };
+    }
+};
+
+export const getSales = async (): Promise<{
+    status: boolean;
+    message: string;
+    data?: FlashSaleInput[];
+}> => {
+    try {
+        const res = await axios.get(`${BASE_URL}/sale/sales`);
+        const message = res.data?.data?.message || "Sales fetched successfully";
+        return {
+            status: true,
+            message: message,
+            data: res.data.data,
+        };
+    } catch (error: any) {
+        const message =
+            error.respones?.data?.message || "Something went wrong!";
+        return { status: false, message: message };
     }
 };
 

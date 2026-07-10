@@ -10,6 +10,7 @@ import Loading from "../../../components/ui/Loading";
 export interface ProductInputType {
     _id?: string;
     productName: string;
+    url?: string;
     image: FileList | File;
     description: string;
     quantity: number;

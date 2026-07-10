@@ -75,7 +75,12 @@ function Navbar() {
                                 <li className="text-sm font-semibold text-text-main hover:text-text-muted hover:cursor-pointer hover:underline">
                                     Store
                                 </li>
-                                <li className="text-sm font-semibold text-text-main hover:text-text-muted hover:cursor-pointer hover:underline">
+                                <li
+                                    onClick={() => {
+                                        navigate("/sales");
+                                    }}
+                                    className="text-sm font-semibold text-text-main hover:text-text-muted hover:cursor-pointer hover:underline"
+                                >
                                     Flash Sales
                                 </li>
                                 <li className="text-sm font-semibold text-text-main hover:text-text-muted hover:cursor-pointer hover:underline">

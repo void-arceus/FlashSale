@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Loading from "../../../components/ui/Loading";
 
-interface CountDownTimer {
+export interface CountDownTimer {
     days: number;
     hours: number;
     minutes: number;

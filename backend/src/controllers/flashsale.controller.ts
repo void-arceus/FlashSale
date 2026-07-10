@@ -55,6 +55,63 @@ export const ScheduleFlashSale = async (req: Request, res: Response) => {
     }
 };
 
+export const getSingleSale = async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params || null;
+        if (!id) {
+            return res.status(400).json({
+                status: false,
+                message: "Sale id not provided!",
+            });
+        }
+
+        const objectId = new mongoose.Types.ObjectId(id as string);
+        if (!objectId) {
+            return res.status(400).json({
+                status: false,
+                message: "Invalid sale id!",
+            });
+        }
+
+        const sale = await FlashSale.aggregate([
+            {
+                $match: {
+                    _id: objectId,
+                },
+            },
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "productId",
+                    foreignField: "_id",
+                    as: "productDetail",
+                },
+            },
+            {
+                $unwind: "$productDetail",
+            },
+        ]);
+
+        if (!sale || sale.length === 0) {
+            return res.status(404).json({
+                status: false,
+                message: "Sale data not found!",
+            });
+        }
+
+        return res.status(200).json({
+            status: true,
+            message: "Sale data fetched successfully!",
+            data: sale,
+        });
+    } catch (error: any) {
+        return res.status(500).json({
+            status: false,
+            message: "Internal Server Error!",
+        });
+    }
+};
+
 export const getAllSales = async (req: Request, res: Response) => {
     try {
         const sales = await FlashSale.aggregate([
@@ -63,8 +120,11 @@ export const getAllSales = async (req: Request, res: Response) => {
                     from: "products",
                     localField: "productId",
                     foreignField: "_id",
-                    as: "productData",
+                    as: "productDetail",
                 },
+            },
+            {
+                $unwind: "$productDetail",
             },
         ]);
         return res.status(200).json({
@@ -112,7 +172,7 @@ export const getAdminSales = async (req: Request, res: Response) => {
         return res.status(200).json({
             status: true,
             message: "Sales fetched successfully",
-            data: products,
+            data: products[0],
         });
     } catch (error: any) {
         return res
