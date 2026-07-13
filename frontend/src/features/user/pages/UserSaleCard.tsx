@@ -43,7 +43,6 @@ function UserSaleCard({ data }: UserSaleCardProps) {
                     getTimeRemaining(diff);
                 setCountDown({ days, hours, minutes, seconds });
             } else if (endTime < now) {
-                clearInterval(interval);
                 setCountDown({
                     days: 0,
                     hours: 0,
@@ -87,56 +86,96 @@ function UserSaleCard({ data }: UserSaleCardProps) {
                 <div className="flex-2 flex items-center justify-end gap-2">
                     {/* display sale timer */}
                     <p
-                        className={`${status === "upcoming" ? "bg-blue-100 text-blue-600" : status === "ongoing" ? "bg-green-100 text-green-600" : status === "ended" ? "bg-red-100 text-red-600" : ""} text-md font-semibold px-2 py-1 rounded-md`}
+                        className={`${status === "upcoming" ? "bg-blue-100 text-blue-600" : status === "ongoing" ? "bg-green-100 text-green-600" : status === "ended" ? "bg-red-100 text-red-600" : ""} text-md font-medium px-2 py-1 rounded-md`}
                     >
                         {status === "upcoming"
                             ? "Starts in"
                             : status === "ongoing"
                               ? "Ends in"
                               : status === "ended"
-                                ? "Ended!"
+                                ? "Sale has Ended"
                                 : ""}
                     </p>
-                    <div className="flex items-center">
-                        <div className="w-8">{countDown.days}d</div>
-                        <div className="w-8">{countDown.hours}h</div>
-                        <div className="w-8">{countDown.minutes}m</div>
-                        <div className="w-8">{countDown.seconds}s</div>
-                    </div>
+                    {status !== "ended" ? (
+                        <div className="flex items-center">
+                            <div className="w-9">
+                                {countDown.days < 10
+                                    ? "0" + countDown.days
+                                    : countDown.days}
+                                d
+                            </div>
+                            <div className="w-8">
+                                {countDown.hours < 10
+                                    ? "0" + countDown.hours
+                                    : countDown.hours}
+                                h
+                            </div>
+                            <div className="w-9">
+                                {countDown.minutes < 10
+                                    ? "0" + countDown.minutes
+                                    : countDown.minutes}
+                                m
+                            </div>
+                            <div className="w-8">
+                                {countDown.seconds < 10
+                                    ? "0" + countDown.seconds
+                                    : countDown.seconds}
+                                s
+                            </div>
+                        </div>
+                    ) : null}
                 </div>
             </div>
 
             {/* price */}
-            <div className="w-full flex items-center justify-between">
-                <div className="w-full flex items-center flex-wrap justify-start text-md font-semibold text-text-main">
-                    <p>Original Price:</p> &nbsp;
-                    <span className="line-through text-red-700">
+            {status !== "ended" ? (
+                <div className="w-full flex items-center justify-between">
+                    <div className="w-full flex items-center flex-wrap justify-start text-md font-semibold text-text-main">
+                        <p>Original Price:</p> &nbsp;
+                        <span className="line-through text-red-700">
+                            ₹
+                            {new Intl.NumberFormat("en-IN").format(
+                                Number(data.productDetail?.originalPrice),
+                            )}
+                        </span>
+                    </div>
+                    <div className="w-full flex flex-wrap items-center justify-end text-md font-semibold text-text-main">
+                        <p>Sale Price:</p> &nbsp;
+                        <span className="text-green-600">
+                            ₹
+                            {new Intl.NumberFormat("en-IN").format(
+                                Number(data.salePrice),
+                            )}
+                        </span>
+                    </div>
+                </div>
+            ) : (
+                <div className="w-full flex items-center justify-start">
+                    <h2 className="text-semibold text-sm text-text-main">
+                        Price: &nbsp;
+                    </h2>
+                    <p className="text-sm text-medium text-text-muted">
                         ₹
                         {new Intl.NumberFormat("en-IN").format(
                             Number(data.productDetail?.originalPrice),
                         )}
-                    </span>
+                    </p>
                 </div>
-                <div className="w-full flex flex-wrap items-center justify-end text-md font-semibold text-text-main">
-                    <p>Sale Price:</p> &nbsp;
-                    <span className="text-green-600">
-                        ₹
-                        {new Intl.NumberFormat("en-IN").format(
-                            Number(data.salePrice),
-                        )}
-                    </span>
-                </div>
-            </div>
+            )}
             <div className="w-full flex items-center justify-between">
                 <button
                     onClick={() => {
-                        navigate("/productDetails");
+                        navigate(`/productDetail/${data._id}`);
                     }}
-                    className="text-sm font-semibold text-text-muted hover:cursor-pointer hover:underline"
+                    className="text-sm font1-semibold text-text-muted hover:cursor-pointer hover:underline"
                 >
                     view details
                 </button>
-                <button className="px-4 py-2 text-sm text-btn-text font-medium bg-btn-primary hover:bg-btn-hover hover:cursor-pointer rounded-lg shadow-sm hover:shadow-md active:scale-[0.96] transition-scale duration-200 ease-in-out">
+                <button
+                    disabled={status.toLowerCase() !== "ongoing"}
+                    onClick={() => console.log("I am buy button.")}
+                    className={`${status.toLowerCase() != "ongoing" ? "opacity-70" : "hover:bg-btn-hover hover:cursor-pointer  shadow-sm hover:shadow-md active:scale-[0.96] transition-scale duration-200 ease-in-out"} px-4 py-2 text-sm text-btn-text font-medium bg-btn-primary rounded-lg `}
+                >
                     Buy Now
                 </button>
             </div>

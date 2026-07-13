@@ -64,7 +64,6 @@ function SaleCard({
                     getTimeRemaining(diff);
                 setCountDown({ days, hours, minutes, seconds });
             } else if (end < now) {
-                clearInterval(interval);
                 setCountDown({
                     days: 0,
                     hours: 0,
@@ -104,13 +103,13 @@ function SaleCard({
             {/* status and countdown  */}
             <div className="w-full flex items-center justify-start gap-4 flex-wrap">
                 <div
-                    className={`${status.toLowerCase() === "upcoming" ? "bg-blue-100" : status.toLowerCase() === "ongoing" ? "bg-green-100" : status.toLowerCase() === "ended" ? "" : "bg-red-100"} flex items-center gap-2 px-4 py-2 rounded-lg`}
+                    className={`${status.toLowerCase() === "upcoming" ? "bg-blue-100" : status.toLowerCase() === "ongoing" ? "bg-green-100" : status.toLowerCase() === "ended" ? "bg-red-200" : "bg-red-100"} flex items-center gap-2 px-4 py-2 rounded-lg`}
                 >
                     <div
                         className={`${status.toLowerCase() === "upcoming" ? "bg-blue-600" : status.toLowerCase() === "ongoing" ? "bg-green-600" : status.toLowerCase() === "ended" ? "bg-red-600" : "bg-red-600"} h-3 w-3 rounded-full`}
                     />
                     <p
-                        className={`${status.toLowerCase() === "upcoming" ? "text-blue-600" : status.toLowerCase() === "ongoing" ? "text-green-600" : status.toLowerCase() === "ended" ? "" : "text-red-600"} text-sm font-semibold`}
+                        className={`${status.toLowerCase() === "upcoming" ? "text-blue-600" : status.toLowerCase() === "ongoing" ? "text-green-600" : status.toLowerCase() === "ended" ? "text-red-700" : "text-red-600"} text-sm font-semibold`}
                     >
                         {status}
                     </p>

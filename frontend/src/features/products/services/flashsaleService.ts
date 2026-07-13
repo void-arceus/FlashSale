@@ -8,7 +8,7 @@ export const ScheduleSale = async (
 ): Promise<{
     status: boolean;
     message: string;
-    data?: any;
+    data?: FlashSaleInput[];
 }> => {
     try {
         const res = await axios.post(`${BASE_URL}/sale/flashsale`, data);
@@ -34,13 +34,14 @@ export const getAdminSales = async (
 ): Promise<{
     status: boolean;
     message?: string;
-    data?: FlashSaleInput;
+    data?: FlashSaleInput[];
 }> => {
     try {
         const res = await axios.get(`${BASE_URL}/sale/mySales/${id}`);
+        console.log("I am here:", res.data.data);
         return {
             status: true,
-            data: res.data as FlashSaleInput,
+            data: res.data.data as FlashSaleInput[],
         };
     } catch (error: any) {
         const message = error.response?.data?.message;
@@ -110,5 +111,29 @@ export const updateSale = async (
         const message =
             error.response?.data?.message || "Failed to update sale!";
         return { status: false, message: message };
+    }
+};
+
+export const getSaleDetail = async (
+    id: string,
+): Promise<{
+    status: boolean;
+    message: string;
+    data?: FlashSaleInput;
+}> => {
+    try {
+        const res = await axios.get(`${BASE_URL}/sale/sales/${id}`);
+        return {
+            status: true,
+            message: "Product details fetched!",
+            data: res.data.data,
+        };
+    } catch (error: any) {
+        const message =
+            error.response?.data?.message || "Something went wrong!";
+        return {
+            status: false,
+            message: message,
+        };
     }
 };

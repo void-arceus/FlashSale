@@ -44,7 +44,7 @@ function App() {
                                 {/* user routes */}
                                 <Route path="/sales" element={<Sales />} />
                                 <Route
-                                    path="/productDetail"
+                                    path="/productDetail/:id"
                                     element={<ProductDetail />}
                                 />
 

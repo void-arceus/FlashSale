@@ -102,7 +102,7 @@ export const getSingleSale = async (req: Request, res: Response) => {
         return res.status(200).json({
             status: true,
             message: "Sale data fetched successfully!",
-            data: sale,
+            data: sale[0],
         });
     } catch (error: any) {
         return res.status(500).json({
@@ -169,10 +169,12 @@ export const getAdminSales = async (req: Request, res: Response) => {
             },
         ]);
 
+        console.log("Returning admin sales:", products);
+
         return res.status(200).json({
             status: true,
             message: "Sales fetched successfully",
-            data: products[0],
+            data: products,
         });
     } catch (error: any) {
         return res
@@ -211,8 +213,6 @@ export const updateSale = async (req: Request, res: Response) => {
             ...updatedData?.toObject(),
             productDetail: product,
         };
-
-        console.log("Updated sale:", response);
 
         return res.status(200).json({
             status: true,

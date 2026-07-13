@@ -85,11 +85,12 @@ function SaleCoordinator() {
         try {
             if (user) {
                 const res = await getAdminSales(user?.id);
-                const sorted = res.data.data.toSorted(
-                    (a: any, b: any) =>
-                        new Date(a.saleStartTime) > new Date(b.saleStartTime),
+                const sorted = res.data?.toSorted(
+                    (a: FlashSaleInput, b: FlashSaleInput): any => {
+                        new Date(a.saleStartTime) > new Date(b.saleStartTime);
+                    },
                 );
-                setSaleData(sorted);
+                setSaleData(sorted as FlashSaleInput[]);
             }
         } catch (error: any) {
             setSaleData([]);
