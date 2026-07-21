@@ -106,7 +106,7 @@ function ProductDetail() {
                         </div>
 
                         {/* other details div */}
-                        <div className="w-full">
+                        <div className="w-full flex flex-col items-start gap-4">
                             {/* sale detail */}
                             {status === "ended" ? (
                                 <div className="w-full flex items-center">
@@ -116,10 +116,16 @@ function ProductDetail() {
                                     </p>
                                 </div>
                             ) : (
-                                <div className="w-full p-2 flex items-center justify-end">
-                                    <div>
-                                        <div />
-                                        <p>
+                                <div className="w-full pt-2 flex items-center justify-start gap-4">
+                                    <div
+                                        className={`${status === "ongoing" ? "bg-green-100" : status === "upcoming" ? "bg-blue-100" : "bg-red-200"} px-2 py-1.5 flex items-center rounded-lg`}
+                                    >
+                                        <div
+                                            className={`${status === "upcoming"} h-4 w-4 rounded-full`}
+                                        />
+                                        <p
+                                            className={`${status === "ongoing" ? "text-green-600" : status === "upcoming" ? "text-blue-600" : "text-red-600"} text-sm font-medium`}
+                                        >
                                             {status === "upcoming"
                                                 ? "Sale starts in :"
                                                 : status === "ongoing"
@@ -127,21 +133,76 @@ function ProductDetail() {
                                                   : "Sale has Ended"}
                                         </p>
                                     </div>
+                                    <div className="flex items-center gap-2">
+                                        <div className="flex items-center">
+                                            <p className="text-sm font-medium text-text-main">
+                                                {countDown.days}
+                                            </p>
+                                            <p className="text-sm font-medium text-text-main">
+                                                d
+                                            </p>
+                                        </div>
+                                        <div className="flex items-center">
+                                            <p className="text-sm font-medium text-text-main">
+                                                {countDown.hours}
+                                            </p>
+                                            <p className="text-sm font-medium text-text-main">
+                                                h
+                                            </p>
+                                        </div>
+                                        <div className="flex items-center">
+                                            <p className="text-sm font-medium text-text-main">
+                                                {countDown.minutes}
+                                            </p>
+                                            <p className="text-sm font-medium text-text-main">
+                                                m
+                                            </p>
+                                        </div>
+                                        <div className="flex items-center">
+                                            <p className="text-sm font-medium text-text-main">
+                                                {countDown.seconds}
+                                            </p>
+                                            <p className="text-sm font-medium text-text-main">
+                                                s
+                                            </p>
+                                        </div>
+                                    </div>
                                 </div>
                             )}
                             {/* product name and details */}
                             <div className="w-full flex flex-col items-start justify-center gap-2">
-                                <h2 className="text-lg font-semibold text-text-main">
+                                <h2 className="text-xl font-semibold text-text-main">
                                     {data?.productDetail?.productName}
                                 </h2>
-                                <p className="text-sm font-medium text-text-muted">
+                                <p className="text-md font-medium text-text-muted leading-6 text-justify">
                                     {data?.productDetail?.description}
                                 </p>
                             </div>
+
+                            {/* price details */}
+                            <div className="flex flex-col items-start">
+                                <div className="flex items-center gap-2">
+                                    <h2 className="text-md font-semibold text-text-main">
+                                        Sale Price:
+                                    </h2>
+                                    <p className="text-md text-green-600 font-semibold">
+                                        ₹{data?.salePrice}
+                                    </p>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <h2 className="text-md font-semibold text-text-muted">
+                                        Original Price:
+                                    </h2>
+                                    <p className="text-md font-semibold text-red-700 line-through">
+                                        ₹{data?.productDetail?.originalPrice}
+                                    </p>
+                                </div>
+                            </div>
+
                             <div className="w-full flex items-center justify-end p-2">
                                 <button
                                     disabled={status !== "ongoing"}
-                                    className={`${status !== "ongoing" ? "opacity-60" : "hover:bg-btn-hover hover:cursor-pointer shadow-sm hover:shadow-md active:scale-[0.96] transition-transform duration-100 ease-in-out"} px-4 py-2 text-sm font-medium text-btn-text bg-btn-primary rounded-lg`}
+                                    className={`${status !== "ongoing" ? "opacity-60 cursor-not-allowed" : "hover:bg-btn-hover hover:cursor-pointer shadow-sm hover:shadow-md active:scale-[0.96] transition-transform duration-100 ease-in-out"} px-4 py-2 text-sm font-medium text-btn-text bg-btn-primary rounded-lg`}
                                 >
                                     Buy Now
                                 </button>
