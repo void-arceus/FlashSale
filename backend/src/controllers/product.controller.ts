@@ -13,30 +13,24 @@ export const addProduct = async (req: Request, res: Response) => {
         const fileBuffer = req.file.buffer;
         const name = req.file.originalname;
         const uploadFile = await uploadImage(fileBuffer, name);
-        const url = uploadFile.url;
+        const productImageUrl = uploadFile.url;
 
         // take the product info inputs
         const {
             productName,
-            description,
+            productDescription,
             quantity,
             originalPrice,
-            salePrice,
-            category,
-            saleStartTime,
-            saleEndTime,
+            productCategory,
         } = req.body;
 
         const result = await Product.create({
             productName,
-            url,
-            description,
-            quantity: Number(quantity),
-            originalPrice: Number(originalPrice),
-            salePrice: Number(salePrice),
-            category,
-            saleStartTime: new Date(saleStartTime),
-            saleEndTime: new Date(saleEndTime),
+            productImageUrl,
+            productDescription,
+            productQuantity: Number(quantity),
+            productOriginalPrice: Number(originalPrice),
+            productCategory,
             adminId: req.user?.id,
         });
 
@@ -133,7 +127,7 @@ export const getAdminProducts = async (
 export const updateProduct = async (
     req: Request,
     res: Response,
-): Promise<Response | any> => {
+): Promise<Response> => {
     try {
         // get product info from the frontend here...
         const { data } = req.body;

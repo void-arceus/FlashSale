@@ -1,15 +1,14 @@
 import mongoose, { Schema } from "mongoose";
-import type { product } from "./product.model";
+import type { IProduct } from "./product.model";
 
 export interface IFlashSale {
-    productId: mongoose.Types.ObjectId | product;
+    productId: mongoose.Types.ObjectId;
     adminId: mongoose.Types.ObjectId;
-    originalPrice: number;
-    salePrice: number;
-    saleStartTime: Date;
-    saleEndTime: Date;
-    saleQuantity: number;
-    productDetail?: product;
+    flashSalePrice: number;
+    flashSaleStartTime: Date;
+    flashSaleEndTime: Date;
+    flashSaleQuantity: number;
+    productDetail?: IProduct;
 }
 
 const flashSchema = new Schema<IFlashSale>(
@@ -24,23 +23,19 @@ const flashSchema = new Schema<IFlashSale>(
             ref: "User",
             required: true,
         },
-        originalPrice: {
+        flashSalePrice: {
             type: Number,
             required: true,
         },
-        salePrice: {
-            type: Number,
-            required: true,
-        },
-        saleStartTime: {
+        flashSaleStartTime: {
             type: Date,
             required: true,
         },
-        saleEndTime: {
+        flashSaleEndTime: {
             type: Date,
             required: true,
         },
-        saleQuantity: {
+        flashSaleQuantity: {
             type: Number,
             required: true,
         },

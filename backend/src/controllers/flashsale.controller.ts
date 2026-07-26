@@ -2,7 +2,7 @@
 import mongoose from "mongoose";
 import { Request, Response } from "express";
 import type { IFlashSale } from "../models/flashsale.model";
-import type { product } from "../models/product.model";
+import type { IProduct } from "../models/product.model";
 import Product from "../models/product.model";
 import FlashSale from "../models/flashsale.model";
 
@@ -34,7 +34,7 @@ export const ScheduleFlashSale = async (req: Request, res: Response) => {
         // if valid Productid get the productData
         const productDetail = (await Product.findById(
             data.productId,
-        )) as product;
+        )) as IProduct;
 
         const response = {
             ...sale.toObject(),
