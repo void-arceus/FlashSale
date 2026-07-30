@@ -3,10 +3,10 @@ import { deleteProduct } from "../../products/services/productService";
 import { useConfirmation } from "../../../context/ConfirmationContext";
 import { useToast } from "../../../context/ToastContext";
 import { useNavigate } from "react-router-dom";
-import type { Product } from "../../products/services/productService";
+import type { IProduct } from "../../products/services/productService";
 
 interface ProductCardProps {
-    product: Product;
+    product: IProduct;
     handleReloadPage: () => void;
 }
 
@@ -42,7 +42,7 @@ export default function ProductCard({
             <div className="h-fit w-full overflow-hidden rounded-xl">
                 {/* image */}
                 <img
-                    src={product.url}
+                    src={product.productImageUrl}
                     alt={product.productName}
                     className="h-70 w-full object-center object-cover rounded-xl hover:scale-106 transition-transform duration-300"
                 />
@@ -53,7 +53,7 @@ export default function ProductCard({
                         {product.productName}
                     </p>
                     <p className="text-sm font-medium text-text-muted leading-normal line-clamp-2">
-                        {product.description}
+                        {product.productDescription}
                     </p>
                 </div>
                 <div></div>

@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import type { FlashSaleInput } from "../../admin/pages/ScheduleSaleForm";
+import type { IFlashSale } from "../../admin/pages/ScheduleSaleForm";
 import type { CountDownTimer } from "../../admin/pages/SaleCard";
 
 interface UserSaleCardProps {
-    data: FlashSaleInput;
+    data: IFlashSale;
 }
 
 function UserSaleCard({ data }: UserSaleCardProps) {

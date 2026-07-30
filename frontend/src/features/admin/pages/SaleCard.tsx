@@ -34,9 +34,8 @@ function SaleCard({
         minutes: 0,
         seconds: 0,
     });
-    const start = new Date(data.saleStartTime);
-    const end = new Date(data.saleEndTime);
-
+    const start = new Date(data.flashSaleStartTime);
+    const end = new Date(data.flashSaleEndTime);
     useEffect(() => {
         const updateTimer = () => {
             const now = new Date();
@@ -166,32 +165,35 @@ function SaleCard({
                     <span className="text-sm text-text-muted font-semibold">
                         ₹
                         {new Intl.NumberFormat("en-IN").format(
-                            data.productDetail.originalPrice,
+                            data.productDetail.productOriginalPrice,
                         )}
                     </span>
                 </p>
                 <p className="text-sm text-text-main font-semibold">
                     Sale Price: &nbsp;
                     <span className="text-sm text-green-600 font-semibold">
-                        ₹{new Intl.NumberFormat("en-IN").format(data.salePrice)}
+                        ₹
+                        {new Intl.NumberFormat("en-IN").format(
+                            data.flashSalePrice,
+                        )}
                     </span>
                 </p>
                 <p className="text-sm text-text-main font-semibold">
                     Quantity: &nbsp;
                     <span className="text-sm text-text-main font-bold">
-                        {data.saleQuantity}
+                        {data.flashSaleQuantity}
                     </span>
                 </p>
                 <p className="text-sm text-text-main font-semibold">
                     Start time: &nbsp;
                     <span className="text-sm text-text-main font-semibold">
-                        {formatDate(data.saleStartTime)}
+                        {formatDate(data.flashSaleStartTime)}
                     </span>
                 </p>
                 <p className="text-sm text-text-main font-semibold">
                     End time: &nbsp;
                     <span className="text-sm text-text-main font-semibold">
-                        {formatDate(data.saleEndTime)}
+                        {formatDate(data.flashSaleEndTime)}
                     </span>
                 </p>
             </div>

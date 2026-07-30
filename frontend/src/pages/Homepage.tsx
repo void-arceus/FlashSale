@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import { getProducts } from "../features/products/services/productService";
-import type { Product } from "../features/products/services/productService";
+import type { IProduct } from "../features/products/services/productService";
 import GeneralProductCard from "./GeneralProductCard";
 import Loading from "../components/ui/Loading";
 
 function Homepage() {
-    const [products, setProducts] = useState<Product[] | null>(null);
+    const [products, setProducts] = useState<IProduct[] | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
     useEffect(() => {
@@ -17,10 +17,9 @@ function Homepage() {
             setLoading(true);
             const result = await getProducts();
             if (result.status && result.data) {
-                setProducts(result.data);
+                setProducts(result.data as IProduct[]);
             }
         } catch (error: any) {
-            1;
             setLoading(false);
         } finally {
             setLoading(false);

@@ -10,15 +10,12 @@ import Loading from "../../../components/ui/Loading";
 export interface ProductInputType {
     _id?: string;
     productName: string;
-    url?: string;
+    productImageUrl?: string;
     image: FileList | File;
-    description: string;
-    quantity: number;
-    originalPrice: number;
-    salePrice: number;
-    category: string;
-    saleStartTime: Date;
-    saleEndTime: Date;
+    productDescription: string;
+    productQuantity: number;
+    productOriginalPrice: number;
+    productCategory: string;
 }
 
 export interface UpdatePayload {
@@ -45,21 +42,11 @@ function AddProduct() {
     } = useForm<ProductInputType>({
         defaultValues: {
             productName: existingProduct?.productName || "",
-            description: existingProduct?.description || "",
-            quantity: Number(existingProduct?.quantity) || 0,
-            category: existingProduct?.category || "",
-            originalPrice: Number(existingProduct?.originalPrice) || 0,
-            salePrice: existingProduct?.salePrice || 0,
-            saleStartTime: existingProduct?.saleStartTime
-                ? (new Date(existingProduct.saleStartTime)
-                      .toISOString()
-                      .slice(0, 16) as any)
-                : "",
-            saleEndTime: existingProduct?.saleEndTime
-                ? (new Date(existingProduct.saleEndTime)
-                      .toISOString()
-                      .slice(0, 16) as any)
-                : "",
+            productDescription: existingProduct?.productDescription || "",
+            productQuantity: Number(existingProduct?.productQuantity) || 0,
+            productCategory: existingProduct?.productCategory || "",
+            productOriginalPrice:
+                Number(existingProduct?.productOriginalPrice) || 0,
         },
     });
     const navigate = useNavigate();
@@ -128,6 +115,7 @@ function AddProduct() {
                 );
             }
         });
+        console.log("Form data:", formData);
         try {
             setLoading(true);
             const res = await addProduct(formData);
@@ -186,16 +174,17 @@ function AddProduct() {
                             Description* :
                         </label>
                         <textarea
-                            id="description"
-                            placeholder="Description"
-                            {...register("description", {
-                                required: "Product description is required",
+                            id="productDescription"
+                            placeholder="productDescription"
+                            {...register("productDescription", {
+                                required:
+                                    "Product productDescription is required",
                             })}
                             className="border-2 border-border resize-none h-30 p-2 rounded-lg bg-white w-full outline-0 hover:border-btn-primary focus:border-btn-primary text-text-body transition-all duration-200 ease-in"
                         />
-                        {errors.description && (
+                        {errors.productDescription && (
                             <p className="text-sm text-error font-medium">
-                                {errors.description.message}
+                                {errors.productDescription.message}
                             </p>
                         )}
                     </div>
@@ -214,15 +203,15 @@ function AddProduct() {
                                     id="quantity"
                                     type="number"
                                     placeholder="quantity"
-                                    {...register("quantity", {
+                                    {...register("productQuantity", {
                                         required: "Quantity is required",
                                     })}
                                     className="border-2 border-border hover:border-border-focus focus:border-border-focus outline-0 p-2 rounded-lg transition-all duration-200 ease-in"
                                 />
                             </div>
-                            {errors.quantity && (
+                            {errors.productQuantity && (
                                 <p className="text-sm text-error font-medium">
-                                    {errors.quantity.message}
+                                    {errors.productQuantity.message}
                                 </p>
                             )}
                         </div>
@@ -235,7 +224,7 @@ function AddProduct() {
                             </label>
                             <select
                                 id="category"
-                                {...register("category", {
+                                {...register("productCategory", {
                                     required: "Category is required",
                                 })}
                                 className="border-2 border-border hover:border-border-focus p-2 rounded-lg text-sm font-medium cursor-pointer"
@@ -245,9 +234,9 @@ function AddProduct() {
                                 <option value="laptop">Laptop</option>
                                 <option value="accessories">Accessories</option>
                             </select>
-                            {errors.category && (
+                            {errors.productCategory && (
                                 <p className="text-sm text-error font-medium">
-                                    {errors.category.message}
+                                    {errors.productCategory.message}
                                 </p>
                             )}
                         </div>
@@ -267,82 +256,15 @@ function AddProduct() {
                                     id="originalPrice"
                                     type="number"
                                     placeholder="original price"
-                                    {...register("originalPrice", {
+                                    {...register("productOriginalPrice", {
                                         required: "Original Price is required",
                                     })}
                                     className="border-2 border-border hover:border-border-focus focus:border-border-focus outline-0 p-2 rounded-lg transition-all duration-200 ease-in"
                                 />
                             </div>
-                            {errors.originalPrice && (
+                            {errors.productOriginalPrice && (
                                 <p className="text-sm text-error font-medium">
-                                    {errors.originalPrice.message}
-                                </p>
-                            )}
-                        </div>
-                        <div className="w-full flex flex-col items-start justify-start gap-2">
-                            <div className="w-full flex flex-col items-start gap-1">
-                                <label
-                                    htmlFor="salePrice"
-                                    className="text-sm font-medium text-text-main"
-                                >
-                                    Sale Price* :
-                                </label>
-                                <input
-                                    id="salePrice"
-                                    type="number"
-                                    placeholder="salePrice"
-                                    {...register("salePrice", {
-                                        required: "Sale Price is required",
-                                    })}
-                                    className="border-2 border-border hover:border-border-focus focus:border-border-focus outline-0 p-2 rounded-lg transition-all duration-200 ease-in"
-                                />
-                            </div>
-                            {errors.salePrice && (
-                                <p className="text-sm text-error font-medium">
-                                    {errors.salePrice.message}
-                                </p>
-                            )}
-                        </div>
-                    </div>
-
-                    {/* sale start time and end time  */}
-                    <div className="w-full flex flex-col items-start justify-center gap-6">
-                        <div className="w-full flex flex-col items-start gap-2">
-                            <div className="flex items-center flex-wrap gap-2">
-                                <label className="text-sm font-medium text-text-main">
-                                    Sale Start Time* :
-                                </label>
-                                <input
-                                    type="datetime-local"
-                                    {...register("saleStartTime", {
-                                        required:
-                                            "Sales start time is required",
-                                    })}
-                                    className="cursor-pointer p-1 border-2 border-border outline-0 focus:border-border-focus hover:border-border-focus rounded-lg"
-                                />
-                            </div>
-                            {errors.saleStartTime && (
-                                <p className="text-sm font-medium text-error">
-                                    {errors.saleStartTime.message}
-                                </p>
-                            )}
-                        </div>
-                        <div className="w-full flex flex-col items-start gap-2">
-                            <div className="w-full flex flex-wrap items-center justify-start gap-1">
-                                <label className="text-sm font-medium text-text-main">
-                                    Sale End Time* :
-                                </label>
-                                <input
-                                    type="datetime-local"
-                                    {...register("saleEndTime", {
-                                        required: "Sale End time is required",
-                                    })}
-                                    className="cursor-pointer p-1 border-2 border-border outline-0 focus:border-border-focus hover:border-border-focus rounded-lg"
-                                />
-                            </div>
-                            {errors.saleEndTime && (
-                                <p className="text-sm font-medium text-error">
-                                    {errors.saleEndTime.message}
+                                    {errors.productOriginalPrice.message}
                                 </p>
                             )}
                         </div>

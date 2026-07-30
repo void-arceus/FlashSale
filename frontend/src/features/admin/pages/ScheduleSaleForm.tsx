@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { getAdminProducts } from "../../products/services/productService";
-import type { Product } from "../../products/services/productService";
+import type { IProduct } from "../../products/services/productService";
 import { useForm, type SubmitHandler } from "react-hook-form";
 import { useAuth } from "../../../context/AuthContext";
 import { useToast } from "../../../context/ToastContext";
@@ -11,30 +11,30 @@ import { useNavigate } from "react-router-dom";
 import closeBtn from "../../../assets/close_btn.svg";
 import type { ProductInputType } from "./AddProduct";
 
-export interface FlashSaleInput {
+export interface IFlashSale {
     _id: string;
     productId: string;
     adminId: string;
+    flashSaleQuantity: number;
     originalPrice: number;
-    saleQuantity: number;
-    salePrice: number;
-    saleStartTime: string;
-    saleEndTime: string;
+    flashSalePrice: number;
+    flashSaleStartTime: string;
+    flashSaleEndTime: string;
     productDetail?: ProductInputType;
 }
 
 interface SaleUpdatePayload {
-    data: Partial<FlashSaleInput>;
+    data: Partial<IFlashSale>;
 }
 
 interface SaleFormProps {
     handleShowScheduleSaleForm: () => void;
     appendNewSaleData: (obj: any) => void;
-    data?: FlashSaleInput;
+    data?: IFlashSale;
     isEditing: boolean;
     handleIsEditing: () => void;
-    saleToUpdate: FlashSaleInput | null;
-    handleUpdateSaleData: (obj: FlashSaleInput) => void;
+    saleToUpdate: IFlashSale | null;
+    handleUpdateSaleData: (obj: IFlashSale) => void;
 }
 
 function ScheduleSaleForm({
@@ -46,7 +46,7 @@ function ScheduleSaleForm({
     handleUpdateSaleData,
 }: SaleFormProps) {
     // get the product names and original price
-    const [products, setProducts] = useState<Product[] | null>(null);
+    const [products, setProducts] = useState<IProduct[] | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const { user } = useAuth();
     const { showToaster } = useToast();
@@ -58,19 +58,19 @@ function ScheduleSaleForm({
         watch,
         reset,
         formState: { errors, dirtyFields },
-    } = useForm<FlashSaleInput>({
+    } = useForm<IFlashSale>({
         defaultValues: {
             productId: saleToUpdate?.productId || "",
-            originalPrice: undefined,
-            salePrice: Number(saleToUpdate?.salePrice) || 0,
-            saleQuantity: Number(saleToUpdate?.saleQuantity) || 0,
-            saleStartTime: saleToUpdate?.saleStartTime.slice(0, 16) || "",
-            saleEndTime: saleToUpdate?.saleEndTime.slice(0, 16) || "",
+            flashSalePrice: Number(saleToUpdate?.flashSalePrice) || 0,
+            flashSaleQuantity: Number(saleToUpdate?.flashSaleQuantity) || 0,
+            flashSaleStartTime:
+                saleToUpdate?.flashSaleStartTime.slice(0, 16) || "",
+            flashSaleEndTime: saleToUpdate?.flashSaleEndTime.slice(0, 16) || "",
         },
     });
 
     const watchProductId = watch("productId");
-    const watchStartTime = watch("saleStartTime");
+    const watchStartTime = watch("flashSaleStartTime");
     const selectedProduct =
         products?.find((p) => p._id === watchProductId) || null;
 
@@ -78,11 +78,11 @@ function ScheduleSaleForm({
         getProducts();
     }, []);
 
-    const onSubmit: SubmitHandler<FlashSaleInput> = async (data) => {
+    const onSubmit: SubmitHandler<IFlashSale> = async (data) => {
         if (isEditing) {
             const changedFields = (
-                Object.keys(dirtyFields) as Array<keyof FlashSaleInput>
-            ).reduce<Partial<FlashSaleInput>>((acc, key) => {
+                Object.keys(dirtyFields) as Array<keyof IFlashSale>
+            ).reduce<Partial<IFlashSale>>((acc, key) => {
                 acc[key] = data[key] as any;
                 return acc;
             }, {});
@@ -113,17 +113,19 @@ function ScheduleSaleForm({
                 } else {
                     showToaster(res.message, "error");
                 }
+                reset();
             } catch (error: any) {
                 setLoading(false);
             } finally {
                 setLoading(false);
             }
+            handleIsEditing();
             return;
         } else {
-            data.originalPrice = Number(selectedProduct?.originalPrice);
+            data.originalPrice = Number(selectedProduct?.productOriginalPrice);
             const formData = new FormData();
             Object.keys(data).forEach((key) => {
-                formData.append(key, String(data[key as keyof FlashSaleInput]));
+                formData.append(key, String(data[key as keyof IFlashSale]));
             });
 
             const obj = Object.fromEntries(formData.entries());
@@ -146,7 +148,6 @@ function ScheduleSaleForm({
                 setLoading(false);
             } finally {
                 setLoading(false);
-                reset();
             }
         }
     };
@@ -155,7 +156,7 @@ function ScheduleSaleForm({
         if (user && user.role === "admin") {
             const res = await getAdminProducts(user.id);
             if (res.status === true) {
-                setProducts(res.data as Product[]);
+                setProducts(res.data as IProduct[]);
             } else {
                 setProducts(null);
             }
@@ -205,9 +206,7 @@ function ScheduleSaleForm({
                                     })}
                                     className="border border-border p-2 rounded-lg text-sm text-text-main font-medium cursor-pointer"
                                 >
-                                    <option value="">
-                                        --Choose an item--"
-                                    </option>
+                                    <option value="">--Choose an item--</option>
                                     {products?.map((p) => (
                                         <option value={p._id} key={p._id}>
                                             {p.productName}
@@ -227,7 +226,7 @@ function ScheduleSaleForm({
                                     Original Price:&nbsp;
                                 </h2>
                                 <p className="text-sm font-medium text-success">
-                                    ₹{selectedProduct.originalPrice}
+                                    ₹{selectedProduct.productOriginalPrice}
                                 </p>
                             </div>
                         ) : null}
@@ -246,7 +245,7 @@ function ScheduleSaleForm({
                                 <input
                                     id="salePrice"
                                     type="number"
-                                    {...register("salePrice", {
+                                    {...register("flashSalePrice", {
                                         required: "Sale Price is required",
                                         valueAsNumber: true,
                                         min: {
@@ -257,7 +256,7 @@ function ScheduleSaleForm({
                                         validate: (value) =>
                                             !selectedProduct ||
                                             Number(value) <
-                                                selectedProduct?.originalPrice ||
+                                                selectedProduct?.productOriginalPrice ||
                                             "Price must be less then original price",
                                     })}
                                     className="border border-border rounded-lg max-w-30 p-2 text-sm text-text-main font-medium outline-0 hover:border-border-hover focus:border-border-hover"
@@ -265,7 +264,7 @@ function ScheduleSaleForm({
                             </div>
                             {errors && (
                                 <p className="text-sm text-error font-medium">
-                                    {errors.salePrice?.message}
+                                    {errors.flashSalePrice?.message}
                                 </p>
                             )}
                         </div>
@@ -282,16 +281,21 @@ function ScheduleSaleForm({
                                 <input
                                     id="saleQuantity"
                                     type="number"
-                                    {...register("saleQuantity", {
+                                    {...register("flashSaleQuantity", {
                                         valueAsNumber: true,
                                         required: "Sale quantity is required",
+                                        validate: (value) =>
+                                            !selectedProduct ||
+                                            Number(value) <=
+                                                selectedProduct?.productQuantity ||
+                                            "Not enough products",
                                     })}
                                     className="border border-border text-sm text-text-main font-medium p-2 max-w-30 rounded-lg outline-0 focus:border-border-hover hover:border-border-hover"
                                 />
                             </div>
                             {errors && (
                                 <p className="text-sm text-error font-medium ">
-                                    {errors.saleQuantity?.message}
+                                    {errors.flashSaleQuantity?.message}
                                 </p>
                             )}
                         </div>
@@ -309,7 +313,7 @@ function ScheduleSaleForm({
                             <input
                                 id="saleStartTime"
                                 type="datetime-local"
-                                {...register("saleStartTime", {
+                                {...register("flashSaleStartTime", {
                                     required: "Sale Start time is required!",
                                     validate: (value) => {
                                         return (
@@ -323,7 +327,7 @@ function ScheduleSaleForm({
                         </div>
                         {errors && (
                             <p className="text-sm text-error font-medium">
-                                {errors.saleStartTime?.message}
+                                {errors.flashSaleStartTime?.message}
                             </p>
                         )}
                     </div>
@@ -339,7 +343,7 @@ function ScheduleSaleForm({
                             <input
                                 id="saleEndTime"
                                 type="datetime-local"
-                                {...register("saleEndTime", {
+                                {...register("flashSaleEndTime", {
                                     required: "Sale End Time is required",
                                     validate: (value) => {
                                         return (
@@ -355,7 +359,7 @@ function ScheduleSaleForm({
                         </div>
                         {errors && (
                             <p className="text-sm text-error font-medium">
-                                {errors.saleEndTime?.message}
+                                {errors.flashSaleEndTime?.message}
                             </p>
                         )}
                     </div>

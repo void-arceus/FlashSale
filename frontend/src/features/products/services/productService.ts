@@ -4,19 +4,14 @@ import axios from "axios";
 import type { UpdatePayload } from "../../admin/pages/AddProduct";
 const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
-export interface Product {
+export interface IProduct {
     _id: string;
     productName: string;
-    description: string;
-    originalPrice: number;
-    salePrice: number;
-    quantity: number;
-    url: string;
-    category: string;
-    saleStartTime: string;
-    saleEndTime: string;
-    createdAt: string;
-    updatedAt: string;
+    productDescription: string;
+    productOriginalPrice: number;
+    productQuantity: number;
+    productImageUrl: string;
+    productCategory: string;
 }
 
 export const addProduct = async (
@@ -39,7 +34,7 @@ export const getAdminProducts = async (
 ): Promise<{
     status: boolean;
     message: string;
-    data?: Product[];
+    data?: IProduct[];
 }> => {
     try {
         const res = await axios.get(`${BASE_URL}/product/products/${adminId}`);
@@ -47,7 +42,7 @@ export const getAdminProducts = async (
         return {
             status: true,
             message: message,
-            data: res.data.data as Product[],
+            data: res.data.data as IProduct[],
         };
     } catch (error: any) {
         const message = error.response?.data?.message || "something went wrong";
@@ -60,12 +55,12 @@ export const getAdminProducts = async (
 // get all products
 export const getProducts = async (): Promise<{
     status: boolean;
-    data?: Product[];
+    data?: IProduct[];
     message?: string;
 }> => {
     try {
         const res = await axios.get(`${BASE_URL}/product/products`);
-        return { status: true, data: res.data.data as Product[] };
+        return { status: true, data: res.data.data as IProduct[] };
     } catch (error: any) {
         const message =
             error.response?.data?.message || "Failed to fetch products";

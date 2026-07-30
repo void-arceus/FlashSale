@@ -2,6 +2,7 @@
 import { Request, Response } from "express";
 import { uploadImage } from "../utils/imagekit.util";
 import Product from "../models/product.model";
+import type { IProduct } from "../models/product.model";
 
 export const addProduct = async (req: Request, res: Response) => {
     try {
@@ -19,17 +20,17 @@ export const addProduct = async (req: Request, res: Response) => {
         const {
             productName,
             productDescription,
-            quantity,
-            originalPrice,
+            productQuantity,
+            productOriginalPrice,
             productCategory,
-        } = req.body;
+        }: IProduct = req.body;
 
         const result = await Product.create({
             productName,
             productImageUrl,
             productDescription,
-            productQuantity: Number(quantity),
-            productOriginalPrice: Number(originalPrice),
+            productQuantity,
+            productOriginalPrice,
             productCategory,
             adminId: req.user?.id,
         });

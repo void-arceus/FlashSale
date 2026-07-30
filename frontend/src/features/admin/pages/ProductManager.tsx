@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import type { Product } from "../../products/services/productService";
+import type { IProduct } from "../../products/services/productService";
 import { getAdminProducts } from "../../products/services/productService";
 import { useAuth } from "../../../context/AuthContext";
 import ProductCard from "./ProductCard";
 import Loading from "../../../components/ui/Loading";
 
 function ProductManager() {
-    const [products, setProducts] = useState<Product[] | undefined>([]);
+    const [products, setProducts] = useState<IProduct[] | undefined>([]);
     const [productLoading, setProductLoading] = useState<boolean>(true);
     const navigate = useNavigate();
     const { user, loading } = useAuth();
@@ -27,6 +27,7 @@ function ProductManager() {
             setProductLoading(true);
             const res = await getAdminProducts(id);
             setProducts(res.data);
+            console.log("products:", res.data);
         } catch (error: any) {
             setProductLoading(false);
         } finally {
@@ -58,9 +59,9 @@ function ProductManager() {
                     </div>
                 ) : (
                     <>
-                        {products ? (
+                        {products?.length !== 0 ? (
                             <div className="w-full p-4 grid grid-cols-1 sm:grid-cols-2  md:grid-cols-3 gap-4">
-                                {products.map((product) => (
+                                {products?.map((product) => (
                                     <ProductCard
                                         product={product}
                                         key={product._id}
@@ -69,7 +70,11 @@ function ProductManager() {
                                 ))}
                             </div>
                         ) : (
-                            <div>No Products Found!</div>
+                            <div className="h-screen w-full flex items-center justify-center">
+                                <p className="text-lg font-medium text-text-muted">
+                                    No Products Found!
+                                </p>
+                            </div>
                         )}
                     </>
                 )}

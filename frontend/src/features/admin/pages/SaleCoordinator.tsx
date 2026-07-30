@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import ScheduleSaleForm, { type FlashSaleInput } from "./ScheduleSaleForm";
+import ScheduleSaleForm, { type IFlashSale } from "./ScheduleSaleForm";
 import { useAuth } from "../../../context/AuthContext";
 import { getAdminSales } from "../../products/services/flashsaleService";
 import SaleCard from "./SaleCard";
@@ -21,7 +21,7 @@ export interface SaleDataInterface {
 function SaleCoordinator() {
     const [showScheduleSaleForm, setShowScheduleSaleForm] =
         useState<boolean>(false);
-    const [saleData, setSaleData] = useState<FlashSaleInput[] | []>([]);
+    const [saleData, setSaleData] = useState<IFlashSale[] | []>([]);
     const [loading, setLoading] = useState<boolean>(false);
     const { showToaster } = useToast();
     const { showConfirmation } = useConfirmation();
@@ -29,9 +29,7 @@ function SaleCoordinator() {
 
     // states for editing the existing sale
     const [isEditing, setIsEditing] = useState<boolean>(false);
-    const [saleToUpdate, setSaleToUpdate] = useState<FlashSaleInput | null>(
-        null,
-    );
+    const [saleToUpdate, setSaleToUpdate] = useState<IFlashSale | null>(null);
 
     const handleSetSaleToUpdate = (obj: any) => {
         setSaleToUpdate(obj);
@@ -41,7 +39,7 @@ function SaleCoordinator() {
         setIsEditing((prev) => !prev);
     }
 
-    async function handleUpdateSaleData(obj: FlashSaleInput) {
+    async function handleUpdateSaleData(obj: IFlashSale) {
         setSaleData((prev) =>
             prev.map((sale) => (sale._id === obj._id ? obj : sale)),
         );
@@ -86,11 +84,12 @@ function SaleCoordinator() {
             if (user) {
                 const res = await getAdminSales(user?.id);
                 const sorted = res.data?.toSorted(
-                    (a: FlashSaleInput, b: FlashSaleInput): any => {
-                        new Date(a.saleStartTime) > new Date(b.saleStartTime);
+                    (a: IFlashSale, b: IFlashSale): any => {
+                        new Date(a.flashSaleStartTime) >
+                            new Date(b.flashSaleStartTime);
                     },
                 );
-                setSaleData(sorted as FlashSaleInput[]);
+                setSaleData(sorted as IFlashSale[]);
             }
         } catch (error: any) {
             setSaleData([]);

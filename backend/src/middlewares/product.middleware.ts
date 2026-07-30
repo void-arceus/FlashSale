@@ -10,23 +10,17 @@ export const validateProduct = (
     try {
         const {
             productName,
-            description,
-            quantity,
-            originalPrice,
-            salePrice,
-            category,
-            saleStartTime,
-            saleEndTime,
+            productDescription,
+            productQuantity,
+            productOriginalPrice,
+            productCategory,
         } = req.body || "";
         const result = validateProductInfo(
             productName,
-            description,
-            Number(quantity),
-            Number(originalPrice),
-            Number(salePrice),
-            category,
-            new Date(saleStartTime),
-            new Date(saleEndTime),
+            productDescription,
+            Number(productQuantity),
+            Number(productOriginalPrice),
+            productCategory,
         );
         if (result.status === false) {
             return res
