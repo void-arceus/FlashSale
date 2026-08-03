@@ -1,6 +1,7 @@
 // purchase.controller.ts
 import { Request, Response } from "express";
 import Product from "../models/product.model";
+import Order from "../models/order.model";
 
 export const purchaseProduct = async (req: Request, res: Response) => {
     try {
@@ -21,7 +22,7 @@ export const purchaseProduct = async (req: Request, res: Response) => {
             });
         }
 
-        // reserver inventory
+        // reserve inventory
         await Product.findByIdAndUpdate(
             { _id: productId },
             {
@@ -29,9 +30,20 @@ export const purchaseProduct = async (req: Request, res: Response) => {
             },
         );
 
+        // create order
+        const order = await Order.create({
+            productId: product._id,
+            adminId: product.adminId,
+            userId: req?.user?.id,
+            orderQuantity: purchaseQuantity,
+            orderPrice: product.productOriginalPrice,
+        });
+
         return res.status(201).json({
             status: true,
             message: "Ordered placed successfully",
+            orderId: order._id,
+            orderStatus: order.orderStatus,
         });
     } catch (error: any) {
         return res.status(500).json({
