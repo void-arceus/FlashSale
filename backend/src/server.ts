@@ -43,7 +43,7 @@ app.get("/", (req: Request, res: Response) => {
 app.use("/v1/auth", authRouter);
 app.use("/v1/product", productRouter);
 app.use("/v1/sale", flashSaleRouter);
-app.use("/v2/purchase", purchaseRouter);
+app.use("/v1/purchase", purchaseRouter);
 
 // connect to db
 connectDB().then(() => {

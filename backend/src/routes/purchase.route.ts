@@ -4,11 +4,7 @@ import { authUser } from "../middlewares/auth.middleware";
 
 const purchaseRouter = express.Router();
 
-purchaseRouter.post(
-    "/product/:productId/:purchaseQuantity",
-    authUser,
-    purchaseProduct,
-);
+purchaseRouter.post("/product/:productId", authUser, purchaseProduct);
 // purchaseRouter.post("/product/flashsale/:saleId");
 
 export default purchaseRouter;
