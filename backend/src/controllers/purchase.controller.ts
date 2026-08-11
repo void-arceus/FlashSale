@@ -7,7 +7,7 @@ import mongoose from "mongoose";
 export const purchaseProduct = async (req: Request, res: Response) => {
     const session = await mongoose.startSession();
     try {
-        await session.startTransaction();
+        session.startTransaction();
         const { productId } = req.params;
         const { purchaseQuantity } = req.body;
         const product = await Product.findById(productId).session(session);

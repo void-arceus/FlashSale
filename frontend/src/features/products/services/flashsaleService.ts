@@ -1,14 +1,14 @@
 // flashsaleService.ts
 import axios from "axios";
 const BASE_URL = import.meta.env.VITE_BACKEND_URL;
-import type { FlashSaleInput } from "../../admin/pages/ScheduleSaleForm";
+import type { IFlashSale } from "../../admin/pages/ScheduleSaleForm";
 
 export const ScheduleSale = async (
     data: any,
 ): Promise<{
     status: boolean;
     message: string;
-    data?: FlashSaleInput[];
+    data?: IFlashSale[];
 }> => {
     try {
         const res = await axios.post(`${BASE_URL}/sale/flashsale`, data);
@@ -34,14 +34,14 @@ export const getAdminSales = async (
 ): Promise<{
     status: boolean;
     message?: string;
-    data?: FlashSaleInput[];
+    data?: IFlashSale[];
 }> => {
     try {
         const res = await axios.get(`${BASE_URL}/sale/mySales/${id}`);
         console.log("I am here:", res.data.data);
         return {
             status: true,
-            data: res.data.data as FlashSaleInput[],
+            data: res.data.data as IFlashSale[],
         };
     } catch (error: any) {
         const message = error.response?.data?.message;
@@ -55,7 +55,7 @@ export const getAdminSales = async (
 export const getSales = async (): Promise<{
     status: boolean;
     message: string;
-    data?: FlashSaleInput[];
+    data?: IFlashSale[];
 }> => {
     try {
         const res = await axios.get(`${BASE_URL}/sale/sales`);
@@ -119,7 +119,7 @@ export const getSaleDetail = async (
 ): Promise<{
     status: boolean;
     message: string;
-    data?: FlashSaleInput;
+    data?: IFlashSale;
 }> => {
     try {
         const res = await axios.get(`${BASE_URL}/sale/sales/${id}`);

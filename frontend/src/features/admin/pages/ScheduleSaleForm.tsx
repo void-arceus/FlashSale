@@ -16,7 +16,7 @@ export interface IFlashSale {
     productId: string;
     adminId: string;
     flashSaleQuantity: number;
-    originalPrice: number;
+    productOriginalPrice: number;
     flashSalePrice: number;
     flashSaleStartTime: string;
     flashSaleEndTime: string;
@@ -122,7 +122,9 @@ function ScheduleSaleForm({
             handleIsEditing();
             return;
         } else {
-            data.originalPrice = Number(selectedProduct?.productOriginalPrice);
+            data.productOriginalPrice = Number(
+                selectedProduct?.productOriginalPrice,
+            );
             const formData = new FormData();
             Object.keys(data).forEach((key) => {
                 formData.append(key, String(data[key as keyof IFlashSale]));

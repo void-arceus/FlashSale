@@ -29,7 +29,20 @@ export const ScheduleFlashSale = async (req: Request, res: Response) => {
             });
         }
 
+        // check product quantity
+        if (product.productQuantity < data.flashSaleQuantity) {
+            return res.status(400).json({
+                status: false,
+                message: "Not enought products int the stock",
+            });
+        }
+
         const sale = await FlashSale.create(data);
+
+        // updating product quantity
+        await Product.findByIdAndUpdate(data?.productId, {
+            productQuantity: product.productQuantity - data.flashSaleQuantity,
+        });
 
         // if valid Productid get the productData
         const productDetail = (await Product.findById(
@@ -169,10 +182,7 @@ export const getAdminSales = async (req: Request, res: Response) => {
             },
         ]);
 
-        console.log("Returning admin sales:", products);
-
         return res.status(200).json({
-            status: true,
             message: "Sales fetched successfully",
             data: products,
         });
@@ -187,7 +197,6 @@ export const updateSale = async (req: Request, res: Response) => {
     try {
         const id = req.params.id || null;
         const { data } = req.body;
-        console.log(req.body);
         if (!id) {
             return res.status(400).json({
                 status: false,

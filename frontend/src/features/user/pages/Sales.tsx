@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
 import Loading from "../../../components/ui/Loading";
-import type { FlashSaleInput } from "../../admin/pages/ScheduleSaleForm";
+import type { IFlashSale } from "../../admin/pages/ScheduleSaleForm";
 import { getSales } from "../../products/services/flashsaleService";
 import UserSaleCard from "./UserSaleCard";
 
 function Sales() {
-    const [sales, setSales] = useState<FlashSaleInput[] | []>([]);
+    const [sales, setSales] = useState<IFlashSale[] | []>([]);
     const [saleLoading, setSaleLoading] = useState<boolean>(false);
 
     useEffect(() => {
@@ -17,7 +17,7 @@ function Sales() {
             setSaleLoading(true);
             const res = await getSales();
             if (res.status === true) {
-                setSales(res.data as FlashSaleInput[]);
+                setSales(res.data as IFlashSale[]);
             } else {
                 console.log(res.message);
             }

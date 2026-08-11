@@ -2,13 +2,13 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import Loading from "../../../components/ui/Loading";
 import { getSaleDetail } from "../../products/services/flashsaleService";
-import type { FlashSaleInput } from "../../admin/pages/ScheduleSaleForm";
+import type { IFlashSale } from "../../admin/pages/ScheduleSaleForm";
 import type { CountDownTimer } from "../../admin/pages/SaleCard";
 
 function ProductDetail() {
     const { id } = useParams();
     const [pageLoading, setPageLoading] = useState<boolean>(true);
-    const [data, setData] = useState<FlashSaleInput | null>(null);
+    const [data, setData] = useState<IFlashSale | null>(null);
     const [status, setStatus] = useState<string>("");
 
     const [countDown, setCountDown] = useState<CountDownTimer>({
@@ -25,9 +25,9 @@ function ProductDetail() {
 
     useEffect(() => {
         function updateTimer() {
-            if (!data?.saleStartTime || !data?.saleEndTime) return;
-            const startTime = new Date(data?.saleStartTime);
-            const endTime = new Date(data?.saleEndTime);
+            if (!data?.flashSaleStartTime || !data?.flashSaleEndTime) return;
+            const startTime = new Date(data?.flashSaleStartTime);
+            const endTime = new Date(data?.flashSaleEndTime);
 
             const now = new Date();
             let currentStatus = "ended";
@@ -77,7 +77,7 @@ function ProductDetail() {
         try {
             setPageLoading(true);
             const res = await getSaleDetail(id as string);
-            setData(res.data as FlashSaleInput);
+            setData(res.data as IFlashSale);
         } catch (error: any) {
             setPageLoading(false);
         } finally {
@@ -97,7 +97,7 @@ function ProductDetail() {
                         {/* image div — Added 'group' and 'z-0' */}
                         <div className="group relative w-full h-180 rounded-lg overflow-hidden p-2 z-0">
                             <img
-                                src={data?.productDetail?.url}
+                                src={data?.productDetail?.productImageUrl}
                                 alt={data?.productDetail?.productName}
                                 className="h-full w-full rounded-2xl shadow-md object-cover transition-transform duration-300 ease-in "
                             />
@@ -109,19 +109,19 @@ function ProductDetail() {
                         <div className="w-full flex flex-col items-start gap-4">
                             {/* sale detail */}
                             {status === "ended" ? (
-                                <div className="w-full flex items-center">
-                                    <div className="" />
+                                <div className="w-fit flex items-center bg-red-100 gap-1 py-2  px-3 rounded-lg">
+                                    <div className="h-4 w-4 rounded-full bg-red-600" />
                                     <p className="text-sm font-medium text-red-600">
-                                        Ended
+                                        Sale has Ended
                                     </p>
                                 </div>
                             ) : (
                                 <div className="w-full pt-2 flex items-center justify-start gap-4">
                                     <div
-                                        className={`${status === "ongoing" ? "bg-green-100" : status === "upcoming" ? "bg-blue-100" : "bg-red-200"} px-2 py-1.5 flex items-center rounded-lg`}
+                                        className={`${status === "ongoing" ? "bg-green-100" : status === "upcoming" ? "bg-blue-100" : "bg-red-200"} px-2 py-1.5 flex items-center gap-1 rounded-lg`}
                                     >
                                         <div
-                                            className={`${status === "upcoming"} h-4 w-4 rounded-full`}
+                                            className={`${status === "upcoming" ? "bg-blue-600" : ""} h-4 w-4 rounded-full`}
                                         />
                                         <p
                                             className={`${status === "ongoing" ? "text-green-600" : status === "upcoming" ? "text-blue-600" : "text-red-600"} text-sm font-medium`}
@@ -175,7 +175,7 @@ function ProductDetail() {
                                     {data?.productDetail?.productName}
                                 </h2>
                                 <p className="text-md font-medium text-text-muted leading-6 text-justify">
-                                    {data?.productDetail?.description}
+                                    {data?.productDetail?.productDescription}
                                 </p>
                             </div>
 
@@ -186,7 +186,7 @@ function ProductDetail() {
                                         Sale Price:
                                     </h2>
                                     <p className="text-md text-green-600 font-semibold">
-                                        ₹{data?.salePrice}
+                                        ₹{data?.flashSalePrice}
                                     </p>
                                 </div>
                                 <div className="flex items-center gap-2">
@@ -194,7 +194,11 @@ function ProductDetail() {
                                         Original Price:
                                     </h2>
                                     <p className="text-md font-semibold text-red-700 line-through">
-                                        ₹{data?.productDetail?.originalPrice}
+                                        ₹
+                                        {
+                                            data?.productDetail
+                                                ?.productOriginalPrice
+                                        }
                                     </p>
                                 </div>
                             </div>

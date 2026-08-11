@@ -16,8 +16,8 @@ function UserSaleCard({ data }: UserSaleCardProps) {
         seconds: 0,
     });
     const navigate = useNavigate();
-    const startTime = new Date(data.saleStartTime);
-    const endTime = new Date(data.saleEndTime);
+    const startTime = new Date(data.flashSaleStartTime);
+    const endTime = new Date(data.flashSaleEndTime);
 
     useEffect(() => {
         function updateTimer() {
@@ -72,7 +72,7 @@ function UserSaleCard({ data }: UserSaleCardProps) {
             {/* image */}
             <div className="w-full overflow-hidden rounded-xl">
                 <img
-                    src={data.productDetail?.url}
+                    src={data.productDetail?.productImageUrl}
                     alt={data.productDetail?.productName}
                     className="h-80 w-full object-center object-cover rounded-xl hover:scale-105 transition-scale duration-200 ease-in"
                 />
@@ -135,7 +135,9 @@ function UserSaleCard({ data }: UserSaleCardProps) {
                         <span className="line-through text-red-700">
                             ₹
                             {new Intl.NumberFormat("en-IN").format(
-                                Number(data.productDetail?.originalPrice),
+                                Number(
+                                    data.productDetail?.productOriginalPrice,
+                                ),
                             )}
                         </span>
                     </div>
@@ -144,7 +146,7 @@ function UserSaleCard({ data }: UserSaleCardProps) {
                         <span className="text-green-600">
                             ₹
                             {new Intl.NumberFormat("en-IN").format(
-                                Number(data.salePrice),
+                                Number(data.flashSalePrice),
                             )}
                         </span>
                     </div>
@@ -157,7 +159,7 @@ function UserSaleCard({ data }: UserSaleCardProps) {
                     <p className="text-sm text-medium text-text-muted">
                         ₹
                         {new Intl.NumberFormat("en-IN").format(
-                            Number(data.productDetail?.originalPrice),
+                            Number(data.productDetail?.productOriginalPrice),
                         )}
                     </p>
                 </div>
@@ -174,7 +176,7 @@ function UserSaleCard({ data }: UserSaleCardProps) {
                 <button
                     disabled={status.toLowerCase() !== "ongoing"}
                     onClick={() => console.log("I am buy button.")}
-                    className={`${status.toLowerCase() != "ongoing" ? "opacity-70" : "hover:bg-btn-hover hover:cursor-pointer  shadow-sm hover:shadow-md active:scale-[0.96] transition-scale duration-200 ease-in-out"} px-4 py-2 text-sm text-btn-text font-medium bg-btn-primary rounded-lg `}
+                    className={`${status.toLowerCase() != "ongoing" ? "opacity-70 cursor-not-allowed" : "hover:bg-btn-hover hover:cursor-pointer  shadow-sm hover:shadow-md active:scale-[0.96] transition-scale duration-200 ease-in-out"} px-4 py-2 text-sm text-btn-text font-medium bg-btn-primary rounded-lg `}
                 >
                     Buy Now
                 </button>

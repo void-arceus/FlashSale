@@ -71,13 +71,13 @@ export default function ProductCard({
                                 state: { editing: true, product: product },
                             });
                         }}
-                        className="bg-primary-bg border border-border px-4 py-1.5 rounded-lg hover:cursor-pointer active:scale-[0.98] transition-all duration-100 ease-in shadow-xs hover:shadow-sm"
+                        className="bg-primary-bg border border-border px-4 py-1.5 rounded-lg hover:cursor-pointer text-sm font-medium active:scale-[0.98] transition-all duration-100 ease-in shadow-xs hover:shadow-sm"
                     >
                         Edit
                     </button>
                     <button
                         onClick={() => handleDeleteProduct(product._id)}
-                        className="bg-btn-primary px-4 py-1.5 hover:bg-btn-hover hover:cursor-pointer rounded-lg font-medium text-btn-text active:scale-[0.98] transition-all duration-100 ease-in shadow-xs hover:shadow-sm"
+                        className="bg-btn-primary px-4 py-1.5 hover:bg-btn-hover hover:cursor-pointer rounded-lg font-medium text-btn-text text-sm active:scale-[0.98] transition-all duration-100 ease-in shadow-xs hover:shadow-sm"
                     >
                         Delete
                     </button>

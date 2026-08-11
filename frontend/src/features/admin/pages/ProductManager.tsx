@@ -27,7 +27,6 @@ function ProductManager() {
             setProductLoading(true);
             const res = await getAdminProducts(id);
             setProducts(res.data);
-            console.log("products:", res.data);
         } catch (error: any) {
             setProductLoading(false);
         } finally {
