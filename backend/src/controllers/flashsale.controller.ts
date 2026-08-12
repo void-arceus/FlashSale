@@ -237,23 +237,65 @@ export const updateSale = async (req: Request, res: Response) => {
 };
 
 export const deleteSale = async (req: Request, res: Response) => {
+    const session = await mongoose.startSession(); 
     try {
-        const saleId = req.params.id || null;
+        session.startTransaction(); 
+        const saleId = req.params.id || null; 
         if (!saleId) {
+            await session.abortTransaction();  
             return res.status(400).json({
                 status: false,
                 message: "Sale Id not provided",
             });
         }
-        await FlashSale.findByIdAndDelete(saleId);
+
+        const saleData = await FlashSale.findOne({_id: saleId}).session(session);  
+        if (!saleData) {
+            await session.abortTransaction(); 
+            return res.status(400).json({
+                status: false,
+                message: "Invalid Sale Id",
+            });
+        }
+
+        let stockQuantity = saleData.flashSaleQuantity; 
+        if (stockQuantity > 0) {
+            const productId = saleData?.productId;  
+            const product = await Product.findOne({_id: productId}).session(session);
+            if (!product) {
+                await session.abortTransaction();  
+                return res.status(400).json({
+                    status: false, 
+                    message: "Invalid Product Id"
+                }); 
+            }
+            await Product.findByIdAndUpdate(
+                {_id: productId}, 
+                {
+                    $set: {
+                        productQuantity: product?.productQuantity + stockQuantity
+                    }
+                }, 
+                {
+                    new: true,
+                    session: session
+                }, 
+            );  
+        }
+        await FlashSale.findByIdAndDelete(saleId).session(session);
+        await session.commitTransaction();
         return res.status(200).json({
             status: true,
             message: "Sale deleted successfully",
         });
     } catch (error: any) {
+        await session.abortTransaction(); 
+        console.log(error.message);  
         return res.status(500).json({
             status: false,
             message: "Internal Server Error",
         });
+    } finally {
+        await session.endSession();  
     }
 };

@@ -6,8 +6,6 @@ import SaleCard from "./SaleCard";
 import { deleteSale } from "../../products/services/flashsaleService";
 import { useToast } from "../../../context/ToastContext";
 import { useConfirmation } from "../../../context/ConfirmationContext";
-import type { UpdatePayload } from "./AddProduct";
-import { updateProduct } from "../../products/services/productService";
 
 export interface SaleDataInterface {
     _id: string;
@@ -64,31 +62,12 @@ function SaleCoordinator() {
 
     async function handleDeleteSale(id: string) {
         try {
-            const saleToDelete = saleData.find((sale) => sale._id === id);
-            let quantityLeft =
-                Number(saleToDelete?.flashSaleQuantity) > 0
-                    ? Number(saleToDelete?.flashSaleQuantity) +
-                      Number(saleToDelete?.productDetail?.productQuantity)
-                    : null;
             setLoading(true);
-            const res = await deleteSale(id);
+            const res = await deleteSale(id as string);
             if (res.status === true) {
                 setSaleData((prev: any) =>
                     prev.filter((data: any) => data._id !== id),
                 );
-
-                if (quantityLeft !== null) {
-                    const newProductData: UpdatePayload = {
-                        data: {
-                            productQuantity: quantityLeft,
-                        },
-                    };
-                    await updateProduct(
-                        saleToDelete?.productDetail?._id as string,
-                        newProductData as UpdatePayload,
-                    );
-                }
-
                 showToaster(res.message, "success");
             } else {
                 showToaster(res.message, "error");
