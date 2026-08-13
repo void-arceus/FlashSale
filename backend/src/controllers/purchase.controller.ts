@@ -4,6 +4,11 @@ import Product from "../models/product.model";
 import Order from "../models/order.model";
 import mongoose from "mongoose";
 
+function paymentSimulation() {
+    let max = 2;
+    return Math.floor(Math.random() * max);
+}
+
 export const purchaseProduct = async (req: Request, res: Response) => {
     const session = await mongoose.startSession();
     try {
@@ -46,13 +51,28 @@ export const purchaseProduct = async (req: Request, res: Response) => {
         });
 
         await order.save({ session });
-        await session.commitTransaction();
 
+        // if payment fails
+        if (paymentSimulation() === 0) {
+            await session.abortTransaction();
+            return res.status(402).json({
+                status: false,
+                message: "Payment Failed",
+            });
+        }
+
+        await Order.findByIdAndUpdate(
+            { _id: order._id },
+            { orderStatus: "COMPLETED" },
+            { session },
+        );
+
+        await session.commitTransaction();
         return res.status(201).json({
             status: true,
             message: "Ordered placed successfully",
             orderId: order._id,
-            orderStatus: order.orderStatus,
+            orderStatus: "COMPLETED",
         });
     } catch (error: any) {
         await session.abortTransaction();
