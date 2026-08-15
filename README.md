@@ -102,10 +102,6 @@ Order creation fails
 Inventory is incorrect
 ```
 
-```
-
-```
-
 With a transaction:
 
 ```text
@@ -314,7 +310,3 @@ The flash-sale flow will introduce additional constraints such as limited sale i
 This is a learning project, so the load-test failures are not something I am hiding. They are one of the most useful parts of the project.
 
 The goal is to find a problem, understand why it happens, improve the implementation, test it again, and learn how the system behaves under increasing concurrency.
-
-```
-
-```
