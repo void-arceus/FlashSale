@@ -1,11 +1,16 @@
+import { useState } from "react";
 import cart from "../assets/cart.svg";
 import type { IProduct } from "../features/products/services/productService";
 
 interface GeneralCardProps {
     product: IProduct;
+    handleShowPurchaseCard: () => void;
 }
 
-function GeneralProductCard({ product }: GeneralCardProps) {
+function GeneralProductCard({
+    product,
+    handleShowPurchaseCard,
+}: GeneralCardProps) {
     return (
         <div className="w-full max-h-120 border border-border rounded-xl p-4 flex flex-col items-start justify-between gap-2 shadow-md">
             <div className="h-fit w-full overflow-hidden rounded-xl">
@@ -40,7 +45,10 @@ function GeneralProductCard({ product }: GeneralCardProps) {
                     <button className="bg-primary-bg border border-border px-4 py-1.5 rounded-lg hover:cursor-pointer active:scale-[0.96] transition-all duration-100 ease-in shadow-xs hover:shadow-sm">
                         <img src={cart} className="h-5" />
                     </button>
-                    <button className="bg-btn-primary px-4 py-1.5 hover:bg-btn-hover hover:cursor-pointer rounded-lg font-medium text-btn-text active:scale-[0.96] transition-all duration-100 ease-in shadow-xs hover:shadow-sm">
+                    <button
+                        onClick={() => handleShowPurchaseCard()}
+                        className="bg-btn-primary px-4 py-1.5 hover:bg-btn-hover hover:cursor-pointer rounded-lg font-medium text-btn-text active:scale-[0.96] transition-all duration-100 ease-in shadow-xs hover:shadow-sm"
+                    >
                         Buy
                     </button>
                 </div>

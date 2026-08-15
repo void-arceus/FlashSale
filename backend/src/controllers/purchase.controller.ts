@@ -5,82 +5,102 @@ import Order from "../models/order.model";
 import mongoose from "mongoose";
 
 function paymentSimulation() {
-    let max = 2;
-    return Math.floor(Math.random() * max);
+    // let max = 2;
+    // return Math.floor(Math.random() * max);
+    return 1;
 }
 
 export const purchaseProduct = async (req: Request, res: Response) => {
-    const session = await mongoose.startSession();
-    try {
-        session.startTransaction();
-        const { productId } = req.params;
-        const { purchaseQuantity } = req.body;
-        const product = await Product.findById(productId).session(session);
-        if (!product) {
-            await session.abortTransaction();
-            return res.status(404).json({
-                status: false,
-                message: "Invalid Product Id",
-            });
-        }
+    const MAX_RETRIES = 3;
 
-        if (product.productQuantity < purchaseQuantity) {
-            await session.abortTransaction();
-            return res.status(409).json({
-                status: false,
-                message: "Out of Stock",
-            });
-        }
+    const { productId } = req.params;
+    const { purchaseQuantity } = req.body;
+    const userId = req.user?.id;
 
-        // reserve inventory
-        await Product.findByIdAndUpdate(
-            { _id: productId },
-            {
-                productQuantity: product.productQuantity - purchaseQuantity,
-            },
-            { session },
-        );
-
-        // create order
-        const order = new Order({
-            productId: product._id,
-            adminId: product.adminId,
-            userId: req?.user?.id,
-            orderQuantity: purchaseQuantity,
-            orderPrice: product.productOriginalPrice,
-        });
-
-        await order.save({ session });
-
-        // if payment fails
-        if (paymentSimulation() === 0) {
-            await session.abortTransaction();
-            return res.status(402).json({
-                status: false,
-                message: "Payment Failed",
-            });
-        }
-
-        await Order.findByIdAndUpdate(
-            { _id: order._id },
-            { orderStatus: "COMPLETED" },
-            { session },
-        );
-
-        await session.commitTransaction();
-        return res.status(201).json({
-            status: true,
-            message: "Ordered placed successfully",
-            orderId: order._id,
-            orderStatus: "COMPLETED",
-        });
-    } catch (error: any) {
-        await session.abortTransaction();
-        return res.status(500).json({
+    if (!Number.isInteger(purchaseQuantity) || purchaseQuantity <= 0) {
+        return res.status(400).json({
             status: false,
-            message: "Internal Server Error",
+            message: "Invalid Purchase Quantity",
         });
-    } finally {
-        await session.endSession();
+    }
+
+    for (let attempt = 0; attempt < MAX_RETRIES; ++attempt) {
+        const session = await mongoose.startSession();
+        try {
+            session.startTransaction();
+            const product = await Product.findOneAndUpdate(
+                {
+                    _id: productId,
+                    productQuantity: { $gte: purchaseQuantity },
+                },
+                { $inc: { productQuantity: -purchaseQuantity } },
+                { session, returnDocument: "after" },
+            );
+
+            if (!product) {
+                await session.abortTransaction();
+                return res.status(409).json({
+                    status: false,
+                    message: "Product not found or Out of Stock",
+                });
+            }
+
+            // create order
+            const order = new Order({
+                productId: product?._id,
+                adminId: product?.adminId,
+                userId,
+                orderQuantity: purchaseQuantity,
+                orderPrice: product?.productOriginalPrice,
+            });
+
+            // if payment fails
+            if (paymentSimulation() === 0) {
+                await session.abortTransaction();
+                return res.status(402).json({
+                    status: false,
+                    message: "Payment Failed, Transaction rolled back",
+                });
+            }
+
+            order.orderStatus = "COMPLETED";
+            await order.save({ session });
+
+            await session.commitTransaction();
+
+            return res.status(201).json({
+                status: true,
+                message: "Ordered placed successfully",
+                orderId: order._id,
+                orderStatus: "COMPLETED",
+            });
+        } catch (error: any) {
+            if (session.inTransaction()) {
+                await session.abortTransaction();
+            }
+
+            // retry if transient transaction conflict
+            if (
+                error?.errorLabelSet?.has("TransientTransactionError") &&
+                attempt < MAX_RETRIES - 1
+            ) {
+                console.log(
+                    `Transaction conflict. Retrying attempt: ${attempt + 1}/${MAX_RETRIES}`,
+                );
+                await new Promise((resolve) =>
+                    setTimeout(resolve, 50 * attempt),
+                );
+                continue;
+            }
+
+            console.error("PURCHASE_ERROR:", error);
+
+            return res.status(500).json({
+                status: false,
+                message: "Internal Server Error",
+            });
+        } finally {
+            await session.endSession();
+        }
     }
 };
