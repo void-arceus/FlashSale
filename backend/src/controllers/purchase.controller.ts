@@ -88,7 +88,7 @@ export const purchaseProduct = async (req: Request, res: Response) => {
                     `Transaction conflict. Retrying attempt: ${attempt + 1}/${MAX_RETRIES}`,
                 );
                 await new Promise((resolve) =>
-                    setTimeout(resolve, 50 * attempt),
+                    setTimeout(resolve, 50 * (attempt + 1)),
                 );
                 continue;
             }
