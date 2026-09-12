@@ -1,7 +1,7 @@
 import type { IProduct } from "../features/products/services/productService";
 
 interface PurchaseCardProps {
-    product: IProduct;
+    product?: IProduct;
 }
 
 function PurchaseCard({ product }: PurchaseCardProps) {

@@ -144,13 +144,13 @@ function AddProduct() {
             <div className="w-full max-w-6xl flex items-center justify-center px-4 pt-5">
                 <form
                     onSubmit={handleSubmit(onFormSubmit)}
-                    className="h-fit w-full max-w-2xl bg-surface p-3 rounded-xl shadow-sm flex flex-col items-center gap-6 mb-5"
+                    className="h-fit w-full max-w-2xl bg-surface p-3 rounded-xs shadow-sm flex flex-col items-center gap-6 mb-5"
                 >
-                    <h1 className="text-2xl font-semibold text-text-main">
+                    <h1 className="text-lg font-semibold text-text-main">
                         Add Product
                     </h1>
                     <div className="w-full flex flex-col items-start gap-1">
-                        <label className="text-sm font-medium text-text-main">
+                        <label className="text-xs font-medium text-text-muted">
                             Product Name* :
                         </label>
                         <input
@@ -160,7 +160,7 @@ function AddProduct() {
                             {...register("productName", {
                                 required: "Product Name is required",
                             })}
-                            className="border-2 border-border p-2 rounded-lg bg-white w-full outline-0 hover:border-btn-primary focus:border-btn-primary text-text-body transition-all duration-200 ease-in"
+                            className="border border-border p-2 rounded-xs bg-white w-full outline-0 hover:border-btn-primary focus:border-btn-primary text-sm font-medium text-text-body transition-all duration-200 ease-in"
                         />
                         {errors.productName && (
                             <p className="text-sm text-error font-medium">
@@ -170,7 +170,7 @@ function AddProduct() {
                     </div>
 
                     <div className="w-full flex flex-col items-start gap-1">
-                        <label className="text-sm font-medium text-text-main">
+                        <label className="text-xs font-medium text-text-muted">
                             Description* :
                         </label>
                         <textarea
@@ -180,7 +180,7 @@ function AddProduct() {
                                 required:
                                     "Product productDescription is required",
                             })}
-                            className="border-2 border-border resize-none h-30 p-2 rounded-lg bg-white w-full outline-0 hover:border-btn-primary focus:border-btn-primary text-text-body transition-all duration-200 ease-in"
+                            className="border border-border resize-none h-30 p-2 rounded-xs text-sm font-medium bg-white w-full outline-0 hover:border-btn-primary focus:border-btn-primary text-text-body transition-all duration-200 ease-in"
                         />
                         {errors.productDescription && (
                             <p className="text-sm text-error font-medium">
@@ -195,7 +195,7 @@ function AddProduct() {
                             <div className="w-ful flex flex-col items-start gap-1">
                                 <label
                                     htmlFor="quantity"
-                                    className="text-sm font-medium text-text-main"
+                                    className="text-xs font-medium text-text-muted"
                                 >
                                     Quantity* :
                                 </label>
@@ -206,7 +206,7 @@ function AddProduct() {
                                     {...register("productQuantity", {
                                         required: "Quantity is required",
                                     })}
-                                    className="border-2 border-border hover:border-border-focus focus:border-border-focus outline-0 p-2 rounded-lg transition-all duration-200 ease-in"
+                                    className="border border-border hover:border-border-focus focus:border-border-focus outline-0 p-2 text-sm font-medium rounded-xs transition-all duration-200 ease-in"
                                 />
                             </div>
                             {errors.productQuantity && (
@@ -218,7 +218,7 @@ function AddProduct() {
                         <div className="w-full sm:w-1/2 flex flex-col items-start justify-start gap-2">
                             <label
                                 htmlFor="category"
-                                className="text-sm text-text-main font-medium"
+                                className="text-xs text-text-muted font-medium"
                             >
                                 Category* :
                             </label>
@@ -227,7 +227,7 @@ function AddProduct() {
                                 {...register("productCategory", {
                                     required: "Category is required",
                                 })}
-                                className="border-2 border-border hover:border-border-focus p-2 rounded-lg text-sm font-medium cursor-pointer"
+                                className="border border-border hover:border-border-focus p-2 rounded-xs text-sm font-medium cursor-pointer"
                             >
                                 <option value="mobile">Mobile</option>
                                 <option value="tablet">Tablet</option>
@@ -248,7 +248,7 @@ function AddProduct() {
                             <div className="w-ful flex flex-col items-start gap-1">
                                 <label
                                     htmlFor="originalPrice"
-                                    className="text-sm font-medium text-text-main"
+                                    className="text-xs font-medium text-text-muted"
                                 >
                                     Original Price* :
                                 </label>
@@ -259,7 +259,7 @@ function AddProduct() {
                                     {...register("productOriginalPrice", {
                                         required: "Original Price is required",
                                     })}
-                                    className="border-2 border-border hover:border-border-focus focus:border-border-focus outline-0 p-2 rounded-lg transition-all duration-200 ease-in"
+                                    className="border border-border hover:border-border-focus focus:border-border-focus outline-0 text-xs font-medium p-2 rounded-xs transition-all duration-200 ease-in"
                                 />
                             </div>
                             {errors.productOriginalPrice && (
@@ -306,13 +306,13 @@ function AddProduct() {
                         <button
                             type="button"
                             onClick={() => handleCancel()}
-                            className="text-text-main text-sm font-medium cursor-pointer hover:underline hover:text-text-muted"
+                            className="text-text-muted text-sm font-medium hover:cursor-pointer hover:underline hover:text-text-main"
                         >
-                            Cancel
+                            cancel
                         </button>
                         <button
                             type="submit"
-                            className="bg-btn-primary hover:bg-btn-hover hover:cursor-pointer text-btn-text text-sm font-medium px-4 py-1.5 rounded-lg active:scale-[0.99] transition-all duration-100 ease-in flex items-center justify-center"
+                            className="bg-btn-primary hover:bg-btn-hover hover:cursor-pointer text-btn-text text-sm font-semibold px-4 py-1.5 rounded-xs active:scale-[0.99] transition-all duration-100 ease-in flex items-center justify-center"
                         >
                             {loading ? (
                                 <Loading size={5} />

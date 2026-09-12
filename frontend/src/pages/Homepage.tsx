@@ -40,7 +40,7 @@ function Homepage() {
                 <section className="relative w-full max-w-6xl flex flex-col">
                     {/* testing displaying product data*/}
                     {showPurchaseCard ? <PurchaseCard /> : null}
-                    <h1 className="px-4 text-2xl font-semibold text-text-main mb-3">
+                    <h1 className="px-4 text-lg font-semibold text-text-main mb-3">
                         All Products
                     </h1>
                     {products ? (

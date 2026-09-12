@@ -53,7 +53,7 @@ function LoginPage() {
         <div className="w-full h-screen flex items-center justify-center p-4">
             <form
                 onSubmit={handleSubmit(onFormSubmit)}
-                className="w-full max-w-sm bg-surface px-3 py-6 border border-border rounded-xl shadow-lg flex flex-col items-center gap-4"
+                className="w-full max-w-sm bg-surface px-3 py-6 border border-border rounded-xs shadow-lg flex flex-col items-center gap-4"
             >
                 <h1 className="text-center text-2xl font-semibold">Login</h1>
                 <div className="w-full flex flex-col items-start gap-1">
@@ -64,7 +64,7 @@ function LoginPage() {
                         id="email"
                         type="email"
                         placeholder="email"
-                        className="w-full bg-primary border border-border rounded-lg p-3 outline-0 text-text-body placeholder:text-text-muted hover:border-border-hover focus:border-border-focus 
+                        className="w-full bg-primary border border-border rounded-xs p-3 outline-0 text-text-body placeholder:text-text-muted text-sm font-medium hover:border-border-hover focus:border-border-focus 
                         "
                         {...register("email", {
                             required: "Email is required",
@@ -86,7 +86,7 @@ function LoginPage() {
                         id="password"
                         type="password"
                         placeholder="password"
-                        className="w-full bg-primary border border-border rounded-lg p-3 outline-0 text-text-body placeholder:text-text-muted hover:border-border-hover focus:border-border-focus "
+                        className="w-full bg-primary border border-border rounded-xs p-3 outline-0 text-text-body placeholder:text-text-muted text-sm font-medium hover:border-border-hover focus:border-border-focus "
                         {...register("password", {
                             required: "Password is required",
                             minLength: {
@@ -118,7 +118,7 @@ function LoginPage() {
                             Remember me
                         </label>
                     </div>
-                    <a className="hover:cursor-pointer hover:underline font-medium text-text-main hover:text-text-muted">
+                    <a className="hover:cursor-pointer hover:underline text-sm font-medium text-text-main hover:text-text-muted">
                         Forgot Password
                     </a>
                 </div>
@@ -126,7 +126,7 @@ function LoginPage() {
                 <div className="w-full flex items-start">
                     <button
                         type="submit"
-                        className="w-full bg-btn-primary hover:bg-btn-hover text-btn-text py-3 rounded-lg hover:cursor-pointer font-medium active:scale-[0.96] transition-all duration-150 flex items-center justify-center"
+                        className="w-full bg-btn-primary hover:bg-btn-hover text-btn-text py-3 rounded-xs hover:cursor-pointer font-medium active:scale-[0.96] transition-all duration-150 flex items-center justify-center shadow-sm hover:shadow-md"
                     >
                         {loading ? <Loading size={5} /> : "Login"}
                     </button>

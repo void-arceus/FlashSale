@@ -27,7 +27,7 @@ function RegisterPage() {
         <div className="w-full h-screen flex items-center justify-center p-4">
             <form
                 onSubmit={handleSubmit(onFormSubmit)}
-                className="w-full max-w-sm bg-surface px-3 py-6 border border-border rounded-xl shadow-lg flex flex-col items-center gap-4"
+                className="w-full max-w-sm bg-surface px-3 py-6 border border-border rounded-xs shadow-lg flex flex-col items-center gap-4"
             >
                 <h1 className="text-center text-2xl font-semibold">
                     Create Account
@@ -41,7 +41,7 @@ function RegisterPage() {
                         id="username"
                         type="username"
                         placeholder="username"
-                        className="w-full bg-primary border border-border rounded-lg p-3 outline-0 text-text-body placeholder:text-text-muted hover:border-border-hover focus:border-border-focus 
+                        className="w-full bg-primary border border-border rounded-xs text-sm font-medium p-3 outline-0 text-text-body placeholder:text-text-muted hover:border-border-hover focus:border-border-focus 
                         "
                         {...register("username", {
                             required: "username is required",
@@ -63,7 +63,7 @@ function RegisterPage() {
                         id="email"
                         type="email"
                         placeholder="email"
-                        className="w-full bg-primary border border-border rounded-lg p-3 outline-0 text-text-body placeholder:text-text-muted hover:border-border-hover focus:border-border-focus 
+                        className="w-full bg-primary border border-border rounded-xs text-sm font-medium p-3 outline-0 text-text-body placeholder:text-text-muted hover:border-border-hover focus:border-border-focus 
                         "
                         {...register("email", {
                             required: "Email is required",
@@ -85,7 +85,7 @@ function RegisterPage() {
                         id="password"
                         type="password"
                         placeholder="password"
-                        className="w-full bg-primary border border-border rounded-lg p-3 outline-0 text-text-body placeholder:text-text-muted hover:border-border-hover focus:border-border-focus 
+                        className="w-full bg-primary border border-border rounded-xs text-sm font-medium p-3 outline-0 text-text-body placeholder:text-text-muted hover:border-border-hover focus:border-border-focus 
                         "
                         {...register("password", {
                             required: "Password is required",
@@ -115,7 +115,7 @@ function RegisterPage() {
                         id="confirmPassword"
                         type="password"
                         placeholder="confirm-password"
-                        className="w-full bg-primary border border-border rounded-lg p-3 outline-0 text-text-body placeholder:text-text-muted hover:border-border-hover focus:border-border-focus 
+                        className="w-full bg-primary border border-border rounded-xs text-sm font-medium p-3 outline-0 text-text-body placeholder:text-text-muted hover:border-border-hover focus:border-border-focus 
                         "
                         {...register("confirmPassword", {
                             required: "Confirm password is required",
@@ -135,7 +135,7 @@ function RegisterPage() {
                 <div className="w-full flex items-start">
                     <button
                         type="submit"
-                        className="w-full bg-btn-primary hover:bg-btn-hover text-btn-text py-3 rounded-lg hover:cursor-pointer font-medium active:scale-[0.96] transition-all duration-150"
+                        className="w-full bg-btn-primary hover:bg-btn-hover text-sm text-btn-text py-3 rounded-xs hover:cursor-pointer font-medium active:scale-[0.96] shadow-sm hover:shadow-md"
                     >
                         Create
                     </button>

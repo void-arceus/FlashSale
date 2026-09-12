@@ -166,13 +166,13 @@ function ScheduleSaleForm({
     };
 
     return (
-        <main className="absolute h-screen w-full bg-black/60 flex items-center justify-center p-4">
+        <main className="absolute h-screen w-full bg-black/50 flex items-center justify-center p-4">
             {!products ? (
                 <Loading />
             ) : (
                 <form
                     onSubmit={handleSubmit(onSubmit)}
-                    className="relative w-full max-w-xl bg-primary-bg border border-border p-6 rounded-2xl shadow-lg flex flex-col items-center gap-4"
+                    className="relative w-full max-w-xl bg-primary-bg border border-border p-6 rounded-xs shadow-lg flex flex-col items-center gap-4"
                 >
                     {/* form close button */}
                     <button
@@ -186,10 +186,10 @@ function ScheduleSaleForm({
                         <img
                             src={closeBtn}
                             alt="close-icon"
-                            className="h-7 border-border"
+                            className="h-6 border-border"
                         />
                     </button>
-                    <h1 className="text-lg font-semibold text-text-main">
+                    <h1 className="text-md font-bold text-text-main">
                         {isEditing ? "Update Sale" : "Schedule Sale"}
                     </h1>
                     <div className=" w-full flex sm:flex-row flex-col sm:items-center items-start gap-2">
@@ -197,7 +197,7 @@ function ScheduleSaleForm({
                             <div className="w-full flex xs:flex-row flex-col  xs:items-center items-start gap-2">
                                 <label
                                     htmlFor="selectProduct"
-                                    className="text-sm font-medium text-text-muted"
+                                    className="text-xs font-medium text-text-muted"
                                 >
                                     Select Product:
                                 </label>
@@ -206,7 +206,7 @@ function ScheduleSaleForm({
                                     {...register("productId", {
                                         required: "Please select a product",
                                     })}
-                                    className="border border-border p-2 rounded-lg text-sm text-text-main font-medium cursor-pointer"
+                                    className="border border-border p-2 rounded-xs text-sm text-text-main font-medium cursor-pointer"
                                 >
                                     <option value="">--Choose an item--</option>
                                     {products?.map((p) => (
@@ -217,17 +217,17 @@ function ScheduleSaleForm({
                                 </select>
                             </div>
                             {errors && (
-                                <p className="text-sm text-error font-medium">
+                                <p className="text-xs text-error font-medium">
                                     {errors.productId?.message}
                                 </p>
                             )}
                         </div>
                         {selectedProduct ? (
                             <div className="flex-1 w-full flex items-start  justify-start gap-2">
-                                <h2 className="text-sm text-text-main font-medium">
+                                <h2 className="text-xs text-text-main font-medium">
                                     Original Price:&nbsp;
                                 </h2>
-                                <p className="text-sm font-medium text-success">
+                                <p className="text-xs font-medium text-success">
                                     ₹{selectedProduct.productOriginalPrice}
                                 </p>
                             </div>
@@ -240,7 +240,7 @@ function ScheduleSaleForm({
                             <div className="w-full flex items-center">
                                 <label
                                     htmlFor="salePrice"
-                                    className="text-sm text-text-muted font-medium"
+                                    className="text-xs text-text-muted font-medium"
                                 >
                                     Sale Price: &nbsp;
                                 </label>
@@ -261,11 +261,11 @@ function ScheduleSaleForm({
                                                 selectedProduct?.productOriginalPrice ||
                                             "Price must be less then original price",
                                     })}
-                                    className="border border-border rounded-lg max-w-30 p-2 text-sm text-text-main font-medium outline-0 hover:border-border-hover focus:border-border-hover"
+                                    className="border border-border rounded-xs max-w-30 p-2 text-xs text-text-main font-medium outline-0 hover:border-border-hover focus:border-border-hover"
                                 />
                             </div>
                             {errors && (
-                                <p className="text-sm text-error font-medium">
+                                <p className="text-xs text-error font-medium">
                                     {errors.flashSalePrice?.message}
                                 </p>
                             )}
@@ -276,7 +276,7 @@ function ScheduleSaleForm({
                             <div className="w-full flex items-center gap-2">
                                 <label
                                     htmlFor="saleQuantity"
-                                    className="text-sm text-text-muted font-medium"
+                                    className="text-xs text-text-muted font-medium"
                                 >
                                     Quantity:
                                 </label>
@@ -292,11 +292,11 @@ function ScheduleSaleForm({
                                                 selectedProduct?.productQuantity ||
                                             "Not enough products",
                                     })}
-                                    className="border border-border text-sm text-text-main font-medium p-2 max-w-30 rounded-lg outline-0 focus:border-border-hover hover:border-border-hover"
+                                    className="border border-border text-xs text-text-main font-medium p-2 max-w-30 rounded-xs outline-0 focus:border-border-hover hover:border-border-hover"
                                 />
                             </div>
                             {errors && (
-                                <p className="text-sm text-error font-medium ">
+                                <p className="text-xs text-error font-medium ">
                                     {errors.flashSaleQuantity?.message}
                                 </p>
                             )}
@@ -308,7 +308,7 @@ function ScheduleSaleForm({
                         <div className="w-full flex xs:flex-row flex-col  xs:items-center items-start gap-2">
                             <label
                                 htmlFor="saleStartTime"
-                                className="text-sm font-medium text-text-muted"
+                                className="text-xs font-medium text-text-muted"
                             >
                                 Sale Start Time:
                             </label>
@@ -324,11 +324,11 @@ function ScheduleSaleForm({
                                         );
                                     },
                                 })}
-                                className="border border-border rounded-lg p-1.5 cursor-pointer outline-0 hover:border-border-hover active:border-border-hover"
+                                className="border border-border rounded-xs p-1.5 cursor-pointer outline-0 hover:border-border-hover active:border-border-hover"
                             />
                         </div>
                         {errors && (
-                            <p className="text-sm text-error font-medium">
+                            <p className="text-xs text-error font-medium">
                                 {errors.flashSaleStartTime?.message}
                             </p>
                         )}
@@ -338,7 +338,7 @@ function ScheduleSaleForm({
                         <div className="w-full flex xs:flex-row flex-col  xs:items-center items-start gap-2">
                             <label
                                 htmlFor="saleEndTime"
-                                className="text-sm text-text-muted font-medium"
+                                className="text-xs text-text-muted font-medium"
                             >
                                 Sale End Time:
                             </label>
@@ -356,11 +356,11 @@ function ScheduleSaleForm({
                                         );
                                     },
                                 })}
-                                className="p-1.5 border border-border rounded-lg hover:cursor-pointer outline-0 hover:border-border-hover focus:border-border-hover"
+                                className="p-1.5 border border-border rounded-xs hover:cursor-pointer outline-0 hover:border-border-hover focus:border-border-hover"
                             />
                         </div>
                         {errors && (
-                            <p className="text-sm text-error font-medium">
+                            <p className="text-xs text-error font-medium">
                                 {errors.flashSaleEndTime?.message}
                             </p>
                         )}
@@ -373,13 +373,13 @@ function ScheduleSaleForm({
                             onClick={() => {
                                 navigate("/addProduct");
                             }}
-                            className="w-full border border-border px-4 py-2 rounded-lg bg-surface text-sm text-text-primary font-medium hover:cursor-pointer shadow-md hover:shadow-lg active:scale-[0.98] transition-scale duration-200 ease-in-out"
+                            className="w-full border border-border px-4 py-2 rounded-xs bg-surface text-xs text-text-primary font-medium hover:cursor-pointer shadow-md hover:shadow-lg active:scale-[0.98] transition-scale duration-200 ease-in-out"
                         >
                             Add New Product
                         </button>
                         <button
                             type="submit"
-                            className="w-full border border-btn-primary px-4 py-2 rounded-lg bg-btn-primary text-sm text-btn-text font-medium hover:cursor-pointer hover:bg-btn-hover shadow-md hover:shadow-lg active:scale-[0.98] transition-scale duration-200 ease-in-out flex items-center justify-center"
+                            className="w-full border border-btn-primary px-4 py-2 rounded-xs bg-btn-primary text-xs text-btn-text font-medium hover:cursor-pointer hover:bg-btn-hover shadow-md hover:shadow-lg active:scale-[0.98] flex items-center justify-center"
                         >
                             {loading ? (
                                 <Loading size={5} />

@@ -120,7 +120,7 @@ function SaleCoordinator() {
                     </h1>
                     <button
                         onClick={handleShowScheduleSaleForm}
-                        className="px-4 py-2 bg-btn-primary hover:bg-btn-hover rounded-lg text-btn-text text-sm font-medium hover:cursor-pointer shadow-sm hover:shadow-md active:scale-[0.96] transition-scale duration-200 ease-in-out"
+                        className="px-4 py-2 bg-btn-primary hover:bg-btn-hover rounded-xs text-btn-text text-sm font-medium hover:cursor-pointer shadow-sm hover:shadow-md active:scale-[0.96] transition-scale duration-200 ease-in-out"
                     >
                         Schedule Sale +
                     </button>

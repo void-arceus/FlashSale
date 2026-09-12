@@ -15,14 +15,16 @@ export default function ConfirmationModal() {
                 onClick={(e: MouseEvent<HTMLDivElement>) => {
                     e.stopPropagation();
                 }}
-                className="bg-surface w-full max-w-sm px-10 py-8 flex flex-col items-center justify-center gap-3 rounded-xl shadow-lg"
+                className="bg-surface w-full max-w-sm px-10 py-8 flex flex-col items-center justify-center gap-3 rounded-xs shadow-lg"
             >
-                <p className="text-center">{text}</p>
+                <p className="text-center text-sm text-text-body font-semibold">
+                    {text}
+                </p>
                 <div className="flex items-center justify-center gap-4">
                     <button
                         onClick={() => closeModal()}
                         disabled={loading}
-                        className="px-6 py-2 bg-gray-200 hover:bg-gray-100 border border-border rounded-md hover:cursor-pointer hover:shadow-sm"
+                        className="px-4 py-1.5 bg-gray-200 hover:bg-gray-100 border border-border rounded-xs text-xs font-medium hover:cursor-pointer hover:shadow-sm"
                     >
                         No
                     </button>
@@ -31,7 +33,7 @@ export default function ConfirmationModal() {
                             triggerConfirm();
                         }}
                         disabled={loading}
-                        className="px-6 py-2 bg-btn-primary text-btn-text hover:bg-btn-hover hover:cursor-pointer rounded-md hover:shadow-sm flex items-center justify-center"
+                        className="px-4 py-1.5 bg-btn-primary text-btn-text hover:bg-btn-hover hover:cursor-pointer rounded-xs text-xs font-medium hover:shadow-sm flex items-center justify-center"
                     >
                         {loading ? <Loading /> : "Yes"}
                     </button>

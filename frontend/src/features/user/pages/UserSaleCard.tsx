@@ -68,25 +68,25 @@ function UserSaleCard({ data }: UserSaleCardProps) {
     };
 
     return (
-        <div className="w-full border border-border rounded-2xl p-3 shadow-md hover:shadow-lg flex flex-col gap-3">
+        <div className="w-full max-w-120 max-h-120 border border-border rounded-xs p-2 shadow-md hover:shadow-lg flex flex-col gap-2">
             {/* image */}
-            <div className="w-full overflow-hidden rounded-xl">
+            <div className="w-full overflow-hidden rounded-xs">
                 <img
                     src={data.productDetail?.productImageUrl}
                     alt={data.productDetail?.productName}
-                    className="h-80 w-full object-center object-cover rounded-xl hover:scale-105 transition-scale duration-200 ease-in"
+                    className="h-80 w-full object-center object-cover rounded-xs hover:scale-105 transition-scale duration-200 ease-in"
                 />
             </div>
 
             {/* product name */}
             <div className="w-full flex sm:flex-row flex-col sm:items-center items-start sm:justify-between justify-center">
-                <h1 className="flex-1 text-md font-semibold text-text-main">
+                <h1 className="flex-1 text-sm font-semibold text-text-main">
                     {data.productDetail?.productName}
                 </h1>
                 <div className="flex-2 flex items-center justify-end gap-2">
                     {/* display sale timer */}
                     <p
-                        className={`${status === "upcoming" ? "bg-blue-100 text-blue-600" : status === "ongoing" ? "bg-green-100 text-green-600" : status === "ended" ? "bg-red-100 text-red-600" : ""} text-md font-medium px-2 py-1 rounded-md`}
+                        className={`${status === "upcoming" ? "bg-blue-100 text-blue-600" : status === "ongoing" ? "bg-green-100 text-green-600" : status === "ended" ? "bg-red-100 text-red-600" : ""} text-xs font-semibold px-2 py-1 rounded-xs`}
                     >
                         {status === "upcoming"
                             ? "Starts in"
@@ -98,25 +98,25 @@ function UserSaleCard({ data }: UserSaleCardProps) {
                     </p>
                     {status !== "ended" ? (
                         <div className="flex items-center">
-                            <div className="w-9">
+                            <div className="w-8 text-sm font-medium">
                                 {countDown.days < 10
                                     ? "0" + countDown.days
                                     : countDown.days}
                                 d
                             </div>
-                            <div className="w-8">
+                            <div className="w-7 text-sm font-medium">
                                 {countDown.hours < 10
                                     ? "0" + countDown.hours
                                     : countDown.hours}
                                 h
                             </div>
-                            <div className="w-9">
+                            <div className="w-9 text-sm font-medium">
                                 {countDown.minutes < 10
                                     ? "0" + countDown.minutes
                                     : countDown.minutes}
                                 m
                             </div>
-                            <div className="w-8">
+                            <div className="w-8 text-sm font-medium">
                                 {countDown.seconds < 10
                                     ? "0" + countDown.seconds
                                     : countDown.seconds}
@@ -129,24 +129,28 @@ function UserSaleCard({ data }: UserSaleCardProps) {
 
             {/* price */}
             {status !== "ended" ? (
-                <div className="w-full flex items-center justify-between">
-                    <div className="w-full flex items-center flex-wrap justify-start text-md font-semibold text-text-main">
-                        <p>Original Price:</p> &nbsp;
-                        <span className="line-through text-red-700">
+                <div className="w-full flex flex-col items-start justify-between gap-1">
+                    <div className="flex flex-wrap items-center justify-end text-md font-semibold text-text-main gap-1">
+                        <p className="text-sm font-semibold text-text-body">
+                            Sale Price:
+                        </p>
+                        <span className="text-green-600 text-sm font-semibold">
+                            ₹
+                            {new Intl.NumberFormat("en-IN").format(
+                                Number(data.flashSalePrice),
+                            )}
+                        </span>
+                    </div>
+                    <div className="flex items-center flex-wrap gap-1">
+                        <p className="text-xs font-semibold text-text-body">
+                            Original Price:
+                        </p>
+                        <span className="text-xs font-semibold line-through text-red-700">
                             ₹
                             {new Intl.NumberFormat("en-IN").format(
                                 Number(
                                     data.productDetail?.productOriginalPrice,
                                 ),
-                            )}
-                        </span>
-                    </div>
-                    <div className="w-full flex flex-wrap items-center justify-end text-md font-semibold text-text-main">
-                        <p>Sale Price:</p> &nbsp;
-                        <span className="text-green-600">
-                            ₹
-                            {new Intl.NumberFormat("en-IN").format(
-                                Number(data.flashSalePrice),
                             )}
                         </span>
                     </div>
@@ -164,19 +168,19 @@ function UserSaleCard({ data }: UserSaleCardProps) {
                     </p>
                 </div>
             )}
-            <div className="w-full flex items-center justify-between">
+            <div className="w-full flex items-center justify-end gap-3">
                 <button
                     onClick={() => {
                         navigate(`/productDetail/${data._id}`);
                     }}
-                    className="text-sm font1-semibold text-text-muted hover:cursor-pointer hover:underline"
+                    className="text-sm font-semibold text-text-muted hover:cursor-pointer hover:underline hover:text-text-body"
                 >
                     view details
                 </button>
                 <button
                     disabled={status.toLowerCase() !== "ongoing"}
                     onClick={() => console.log("I am buy button.")}
-                    className={`${status.toLowerCase() != "ongoing" ? "opacity-70 cursor-not-allowed" : "hover:bg-btn-hover hover:cursor-pointer  shadow-sm hover:shadow-md active:scale-[0.96] transition-scale duration-200 ease-in-out"} px-4 py-2 text-sm text-btn-text font-medium bg-btn-primary rounded-lg `}
+                    className={`${status.toLowerCase() != "ongoing" ? "opacity-70 cursor-not-allowed" : "hover:bg-btn-hover hover:cursor-pointer  shadow-sm hover:shadow-md active:scale-[0.96] transition-scale duration-200 ease-in-out"} px-4 py-2 text-xs text-btn-text font-semibold bg-btn-primary rounded-xs`}
                 >
                     Buy Now
                 </button>

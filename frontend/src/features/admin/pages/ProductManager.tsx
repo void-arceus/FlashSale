@@ -37,15 +37,15 @@ function ProductManager() {
     return (
         <main className="pt-16 h-screen w-full flex items-center justify-center">
             <section className="h-full w-full max-w-6xl flex flex-col items-start">
-                <div className="w-full px-4 pt-2 flex items-center justify-between">
-                    <h1 className="text-xl font-semibold text-text-main">
+                <div className="w-full px-4 pt-1 flex items-center justify-between">
+                    <h1 className="text-lg font-semibold text-text-main">
                         Your Products
                     </h1>
                     <button
                         onClick={() => {
                             navigate("/addProduct");
                         }}
-                        className="px-3 py-1.5 bg-btn-primary rounded-lg text-btn-text font-medium hover:cursor-pointer hover:bg-btn-hover active:scale-[0.96]"
+                        className="px-4 py-2 bg-btn-primary rounded-xs text-btn-text text-xs font-semibold hover:cursor-pointer hover:bg-btn-hover active:scale-[0.96]"
                     >
                         Add Product +
                     </button>
