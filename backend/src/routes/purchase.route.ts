@@ -1,5 +1,8 @@
 import express from "express";
-import { purchaseProduct } from "../controllers/purchase.controller";
+import {
+    flashSalePurchase,
+    purchaseProduct,
+} from "../controllers/purchase.controller";
 import { authUser } from "../middlewares/auth.middleware";
 import { purchaseRateLimiter } from "../middlewares/ratelimiter.middleware";
 
@@ -11,6 +14,11 @@ purchaseRouter.post(
     purchaseRateLimiter,
     purchaseProduct,
 );
-// purchaseRouter.post("/product/flashsale/:saleId");
+purchaseRouter.post(
+    "/salePurchase/:id",
+    authUser,
+    purchaseRateLimiter,
+    flashSalePurchase,
+);
 
 export default purchaseRouter;

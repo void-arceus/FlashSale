@@ -124,7 +124,6 @@ export const getAdminProducts = async (
     }
 };
 
-// edit Product
 export const updateProduct = async (
     req: Request,
     res: Response,

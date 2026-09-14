@@ -10,6 +10,7 @@ export interface IOrder {
     orderQuantity: number;
     orderPrice: number;
     orderStatus: OrderStatus;
+    orderType: "NORMAL" | "FLASHSALE";
 }
 
 const orderSchema = new Schema<IOrder>(

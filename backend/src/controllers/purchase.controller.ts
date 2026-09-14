@@ -1,14 +1,9 @@
 // purchase.controller.ts
 import { Request, Response } from "express";
 import Product from "../models/product.model";
+import FlashSale from "../models/flashsale.model";
 import Order from "../models/order.model";
 import mongoose from "mongoose";
-
-function paymentSimulation() {
-    // let max = 2;
-    // return Math.floor(Math.random() * max);
-    return 1;
-}
 
 export const purchaseProduct = async (req: Request, res: Response) => {
     const MAX_RETRIES = 3;
@@ -52,25 +47,17 @@ export const purchaseProduct = async (req: Request, res: Response) => {
                 userId,
                 orderQuantity: purchaseQuantity,
                 orderPrice: product?.productOriginalPrice,
+                orderStatus: "COMPLETED",
+                orderType: "NORMAL",
             });
 
-            // if payment fails
-            if (paymentSimulation() === 0) {
-                await session.abortTransaction();
-                return res.status(402).json({
-                    status: false,
-                    message: "Payment Failed, Transaction rolled back",
-                });
-            }
-
-            order.orderStatus = "COMPLETED";
             await order.save({ session });
 
             await session.commitTransaction();
 
             return res.status(201).json({
                 status: true,
-                message: "Ordered placed successfully",
+                message: "Order placed successfully",
                 orderId: order._id,
                 orderStatus: "COMPLETED",
             });
@@ -102,5 +89,59 @@ export const purchaseProduct = async (req: Request, res: Response) => {
         } finally {
             await session.endSession();
         }
+    }
+};
+
+export const flashSalePurchase = async (req: Request, res: Response) => {
+    const session = await mongoose.startSession();
+    try {
+        session.startTransaction();
+        const { id } = req.params;
+        const userId = req.user?.id;
+
+        const saleProduct = await FlashSale.findOneAndUpdate(
+            {
+                _id: id,
+                flashSaleQuantity: { $gte: 1 },
+            },
+            {
+                $inc: { flashSaleQuantity: -1 },
+            },
+            { session, returnDocument: "after" },
+        );
+
+        if (!saleProduct) {
+            await session.abortTransaction();
+            return res.status(409).json({
+                status: false,
+                message: "Product not found or OUT of Stock",
+            });
+        }
+
+        const order = new Order({
+            productId: id,
+            adminId: saleProduct?.adminId,
+            userId: userId,
+            orderQuantity: 1,
+            orderPrice: saleProduct?.flashSalePrice,
+            orderStatus: "COMPLETED",
+            orderType: "FLASHSALE",
+        });
+
+        await order.save({ session });
+        await session.commitTransaction();
+        return res.status(200).json({
+            status: true,
+            message: "Product Bought Successfully!",
+            orderId: order._id,
+        });
+    } catch (error: any) {
+        await session.abortTransaction();
+        return res.status(500).json({
+            status: false,
+            message: "Internal Server Error",
+        });
+    } finally {
+        await session.endSession();
     }
 };
