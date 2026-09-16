@@ -4,6 +4,92 @@ import Product from "../models/product.model";
 import FlashSale from "../models/flashsale.model";
 import Order from "../models/order.model";
 import mongoose from "mongoose";
+import {
+    addRequestToWorker,
+    clearSaleWorker,
+    resolveRequest,
+} from "../workers/flashSaleWorker";
+
+export const handlePurchaseProduct = async (
+    sale_id: string,
+    user_id: string,
+) => {
+    const session = await mongoose.startSession();
+    try {
+        const saleId = new mongoose.Types.ObjectId(sale_id);
+        const userId = new mongoose.Types.ObjectId(user_id);
+
+        session.startTransaction();
+
+        // prevent user from buying again from same sale
+        const check = await Order.findOne({
+            userId,
+            saleId,
+        });
+        if (check) {
+            await session.abortTransaction();
+            return {
+                statusCode: 409,
+                status: false,
+                message: "You can only purchase once during sale!",
+            };
+        }
+
+        const purchase = await FlashSale.findOneAndUpdate(
+            {
+                _id: saleId,
+                flashSaleQuantity: { $gte: 1 },
+            },
+            {
+                $inc: { flashSaleQuantity: -1 },
+            },
+            { session, returnDocument: "after" },
+        );
+        if (!purchase) {
+            await session.abortTransaction();
+            clearSaleWorker();
+            return {
+                statusCode: 409,
+                status: false,
+                message: "OUT OF STOCK!",
+            };
+        }
+
+        const order = new Order({
+            productId: purchase?.productId,
+            adminId: purchase?.adminId,
+            userId: userId,
+            saleId: saleId,
+            orderQuantity: 1,
+            orderPrice: purchase?.flashSalePrice,
+            orderStatus: "COMPLETED",
+            orderType: "FLASHSALE",
+        });
+
+        await order.save({ session });
+        await session.commitTransaction();
+        return {
+            statusCode: 200,
+            status: true,
+            message: "Product Bought Successfully!",
+            orderId: order._id,
+        };
+    } catch (error: any) {
+        // if transient transaction error put that request into the worker queue
+        if (error?.errorLabelSet?.has("TransientTransactionError")) {
+            // put this request in worker queue
+            return {
+                statusCode: 400,
+                status: false,
+                message: "TransientTransactionError",
+            };
+        }
+    } finally {
+        if (session.inTransaction()) {
+            await session.abortTransaction();
+        }
+    }
+};
 
 export const purchaseProduct = async (req: Request, res: Response) => {
     const MAX_RETRIES = 3;
@@ -70,22 +156,11 @@ export const purchaseProduct = async (req: Request, res: Response) => {
             if (
                 error?.errorLabelSet?.has("TransientTransactionError") &&
                 attempt < MAX_RETRIES - 1
-            ) {
-                console.log(
-                    `Transaction conflict. Retrying attempt: ${attempt + 1}/${MAX_RETRIES}`,
-                );
-                await new Promise((resolve) =>
-                    setTimeout(resolve, 50 * (attempt + 1)),
-                );
-                continue;
-            }
-
-            console.error("PURCHASE_ERROR:", error);
-
-            return res.status(500).json({
-                status: false,
-                message: "Internal Server Error",
-            });
+            )
+                return res.status(500).json({
+                    status: false,
+                    message: "Internal Server Error",
+                });
         } finally {
             await session.endSession();
         }
@@ -93,64 +168,31 @@ export const purchaseProduct = async (req: Request, res: Response) => {
 };
 
 export const flashSalePurchase = async (req: Request, res: Response) => {
-    const session = await mongoose.startSession();
     try {
-        session.startTransaction();
         const { id } = req.params;
         const userId = req.user?.id;
-
-        // prevent user from buying again from same sale
-        const check = await Order.findOne({ userId, productId: id });
-        if (check) {
-            return res.status(409).json({
-                status: false,
-                message: "You can only purchase once during sale!",
-            });
-        }
-
-        const saleProduct = await FlashSale.findOneAndUpdate(
-            {
-                _id: id,
-                flashSaleQuantity: { $gte: 1 },
-            },
-            {
-                $inc: { flashSaleQuantity: -1 },
-            },
-            { session, returnDocument: "after" },
+        const result = await handlePurchaseProduct(
+            id as string,
+            userId as string,
         );
-
-        if (!saleProduct) {
-            await session.abortTransaction();
-            return res.status(409).json({
-                status: false,
-                message: "Product not found or OUT of Stock",
+        console.log("Result:", result);
+        if (result?.statusCode === 400) {
+            addRequestToWorker({
+                userId: userId as string,
+                saleId: id as string,
+                res: res,
             });
+            resolveRequest();
+            return;
         }
-
-        const order = new Order({
-            productId: saleProduct?.productId,
-            adminId: saleProduct?.adminId,
-            userId: userId,
-            orderQuantity: 1,
-            orderPrice: saleProduct?.flashSalePrice,
-            orderStatus: "COMPLETED",
-            orderType: "FLASHSALE",
-        });
-
-        await order.save({ session });
-        await session.commitTransaction();
-        return res.status(200).json({
-            status: true,
-            message: "Product Bought Successfully!",
-            orderId: order._id,
+        return res.status(Number(result?.statusCode)).json({
+            status: result?.status,
+            message: result?.message,
         });
     } catch (error: any) {
-        await session.abortTransaction();
         return res.status(500).json({
             status: false,
             message: "Internal Server Error",
         });
-    } finally {
-        await session.endSession();
     }
 };

@@ -30,9 +30,6 @@ export async function getUserOrders(req: Request, res: Response) {
                 $unwind: "$productDetail",
             },
         ]);
-
-        console.log("Orders:", orders);
-
         let len = orders.length;
         return res.status(len === 0 ? 204 : 200).json({
             status: true,

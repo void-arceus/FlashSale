@@ -6,6 +6,7 @@ export interface IOrder {
     productId: mongoose.Types.ObjectId;
     adminId: mongoose.Types.ObjectId;
     userId: mongoose.Types.ObjectId;
+    saleId?: mongoose.Types.ObjectId | null;
     orderQuantity: number;
     orderPrice: number;
     orderStatus: "PENDING" | "COMPLETED" | "FAILED";
@@ -30,6 +31,11 @@ const orderSchema = new Schema<IOrder>(
             type: mongoose.Types.ObjectId,
             ref: "User",
             required: true,
+        },
+        saleId: {
+            type: mongoose.Types.ObjectId,
+            ref: "FlashSale",
+            default: null,
         },
         orderQuantity: {
             type: Number,
