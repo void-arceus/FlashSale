@@ -17,6 +17,7 @@ import { Unauthorized } from "./components/Unauthorized";
 import Toaster from "./components/ui/Toaster";
 import Sales from "./features/user/pages/Sales";
 import ProductDetail from "./features/user/pages/ProductDetail";
+import MyOrders from "./features/user/pages/MyOrders";
 axios.defaults.withCredentials = true;
 
 function App() {
@@ -46,6 +47,10 @@ function App() {
                                 <Route
                                     path="/productDetail/:id"
                                     element={<ProductDetail />}
+                                />
+                                <Route
+                                    path="/myorders"
+                                    element={<MyOrders />}
                                 />
 
                                 {/* admin routes */}

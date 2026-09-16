@@ -10,6 +10,7 @@ import { useToast } from "../../../context/ToastContext";
 function ProductDetail() {
     const { id } = useParams();
     const [pageLoading, setPageLoading] = useState<boolean>(true);
+    const [purchaseLoading, setPurchaseLoading] = useState<boolean>(false);
     const [data, setData] = useState<IFlashSale | null>(null);
     const [status, setStatus] = useState<string>("");
     const { showToaster } = useToast();
@@ -90,13 +91,18 @@ function ProductDetail() {
 
     async function purchaseProduct() {
         try {
+            setPurchaseLoading(true);
             const res = await purchaseFlashSaleProduct(data?._id as string);
-            if (res.status) {
+            if (res.status === true) {
                 showToaster("Product purchased successfully!", "success");
+            } else {
+                showToaster(res.data?.message, "error");
+                return;
             }
         } catch (error: any) {
-            throw new Error(error);
+            console.log("ERROR:", error.response.data);
         } finally {
+            setPurchaseLoading(false);
         }
     }
 
@@ -230,9 +236,9 @@ function ProductDetail() {
                                 <button
                                     disabled={status !== "ongoing"}
                                     onClick={purchaseProduct}
-                                    className={`${status !== "ongoing" ? "opacity-60 cursor-not-allowed" : "hover:bg-btn-hover hover:cursor-pointer shadow-sm hover:shadow-md active:scale-[0.96]"} px-4 py-2 text-sm font-semibold text-btn-text bg-btn-primary rounded-xs`}
+                                    className={`${status !== "ongoing" ? "opacity-60 cursor-not-allowed" : "hover:bg-btn-hover hover:cursor-pointer shadow-sm hover:shadow-md active:scale-[0.96]"} w-25 px-4 py-2 text-sm font-semibold text-btn-text bg-btn-primary rounded-xs flex items-center justify-center`}
                                 >
-                                    Buy Now
+                                    {purchaseLoading ? <Loading /> : "Buy Now"}
                                 </button>
                             </div>
                         </div>

@@ -1,5 +1,4 @@
 import mongoose, { Schema } from "mongoose";
-import { timeStamp } from "node:console";
 
 export type OrderStatus = "PENDING" | "COMPLETED" | "FAILED";
 
@@ -9,8 +8,10 @@ export interface IOrder {
     userId: mongoose.Types.ObjectId;
     orderQuantity: number;
     orderPrice: number;
-    orderStatus: OrderStatus;
+    orderStatus: "PENDING" | "COMPLETED" | "FAILED";
     orderType: "NORMAL" | "FLASHSALE";
+    createdAt: Date;
+    updatedAt: Date;
 }
 
 const orderSchema = new Schema<IOrder>(
@@ -35,6 +36,11 @@ const orderSchema = new Schema<IOrder>(
             required: true,
         },
         orderPrice: { type: Number, required: true },
+        orderType: {
+            type: String,
+            enum: ["NORMAL", "FLASHSALE"],
+            default: "NORMAL",
+        },
         orderStatus: {
             type: String,
             enum: ["PENDING", "COMPLETED", "FAILED"],

@@ -5,6 +5,7 @@ import authRouter from "./routes/auth.route";
 import productRouter from "./routes/product.route";
 import purchaseRouter from "./routes/purchase.route";
 import flashSaleRouter from "./routes/flashsale.route";
+import orderRouter from "./routes/order.route";
 import cookieParser = require("cookie-parser");
 import cors, { CorsOptions } from "cors";
 dotenv.config();
@@ -44,6 +45,7 @@ app.use("/v1/auth", authRouter);
 app.use("/v1/product", productRouter);
 app.use("/v1/sale", flashSaleRouter);
 app.use("/v1/purchase", purchaseRouter);
+app.use("/v1/orders", orderRouter);
 
 // connect to db
 connectDB().then(() => {

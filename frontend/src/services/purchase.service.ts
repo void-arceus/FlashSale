@@ -7,6 +7,6 @@ export async function purchaseFlashSaleProduct(id: string) {
         const res = await axios.post(`${BASE_URL}/purchase/salePurchase/${id}`);
         return res.data;
     } catch (error: any) {
-        throw new Error(error);
+        return error.response;
     }
 }

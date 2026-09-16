@@ -99,6 +99,15 @@ export const flashSalePurchase = async (req: Request, res: Response) => {
         const { id } = req.params;
         const userId = req.user?.id;
 
+        // prevent user from buying again from same sale
+        const check = await Order.findOne({ userId, productId: id });
+        if (check) {
+            return res.status(409).json({
+                status: false,
+                message: "You can only purchase once during sale!",
+            });
+        }
+
         const saleProduct = await FlashSale.findOneAndUpdate(
             {
                 _id: id,
@@ -119,7 +128,7 @@ export const flashSalePurchase = async (req: Request, res: Response) => {
         }
 
         const order = new Order({
-            productId: id,
+            productId: saleProduct?.productId,
             adminId: saleProduct?.adminId,
             userId: userId,
             orderQuantity: 1,
